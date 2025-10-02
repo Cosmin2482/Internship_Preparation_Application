@@ -26,7 +26,7 @@ function App() {
 
   useEffect(() => {
     loadData();
-    setupKeyboardShortcuts();
+    return setupKeyboardShortcuts();
   }, []);
 
   const loadData = async () => {
