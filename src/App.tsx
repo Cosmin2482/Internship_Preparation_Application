@@ -7,7 +7,7 @@ import { Labs } from './components/Labs';
 import { HRTools } from './components/HRTools';
 import { AITutor } from './components/AITutor';
 import { PomodoroTimer } from './components/PomodoroTimer';
-import { Loader, Download, FileText, Globe } from 'lucide-react';
+import { Loader, Download, FileText } from 'lucide-react';
 
 type View = 'term' | 'labs' | 'hr';
 
@@ -18,9 +18,7 @@ function App() {
   const [selectedTermId, setSelectedTermId] = useState<string | null>(null);
   const [view, setView] = useState<View>('term');
   const [loading, setLoading] = useState(true);
-  const [tutorOpen, setTutorOpen] = useState(false);
   const [showPomodoro, setShowPomodoro] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'ro'>('en');
 
   const selectedTerm = terms.find(t => t.id === selectedTermId) || null;
   const selectedTermQuestions = quizQuestions.filter(q => q.term_id === selectedTermId);
@@ -28,16 +26,16 @@ function App() {
   useEffect(() => {
     loadData();
     return setupKeyboardShortcuts();
-  }, [language]);
+  }, []);
 
   const loadData = async () => {
     try {
       setLoading(true);
 
       const [categoriesRes, termsRes, quizRes] = await Promise.all([
-        supabase.from('categories').select('*').eq('language', language).order('order_index'),
-        supabase.from('terms').select('*').eq('language', language).order('order_index'),
-        supabase.from('quiz_questions').select('*').eq('language', language)
+        supabase.from('categories').select('*').order('order_index'),
+        supabase.from('terms').select('*').order('order_index'),
+        supabase.from('quiz_questions').select('*')
       ]);
 
       if (categoriesRes.data) setCategories(categoriesRes.data);
@@ -56,12 +54,6 @@ function App() {
 
   const setupKeyboardShortcuts = () => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 't' || e.key === 'T') {
-        if (!['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
-          e.preventDefault();
-          setTutorOpen(prev => !prev);
-        }
-      }
       if (e.key === 'p' || e.key === 'P') {
         if (!['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
           e.preventDefault();
@@ -148,41 +140,14 @@ ${selectedTerm.diagram}
       <main className="lg:ml-80 min-h-screen">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <div className="flex gap-3 items-center">
-              {/* Language Switcher */}
-              <div className="flex items-center gap-2 bg-gray-800 border border-gray-700 rounded-lg p-1">
-                <button
-                  onClick={() => setLanguage('en')}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded transition-colors ${
-                    language === 'en'
-                      ? 'bg-cyan-600 text-white'
-                      : 'text-gray-400 hover:text-gray-200'
-                  }`}
-                  title="English"
-                >
-                  <Globe size={16} />
-                  EN
-                </button>
-                <button
-                  onClick={() => setLanguage('ro')}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded transition-colors ${
-                    language === 'ro'
-                      ? 'bg-cyan-600 text-white'
-                      : 'text-gray-400 hover:text-gray-200'
-                  }`}
-                  title="Română"
-                >
-                  <Globe size={16} />
-                  RO
-                </button>
-              </div>
+            <div className="flex gap-3">
               {view === 'term' && selectedTerm && (
                 <button
                   onClick={exportNotes}
                   className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-lg transition-colors border border-gray-700"
                 >
                   <Download size={18} />
-                  {language === 'en' ? 'Export Notes' : 'Exportă Notițe'}
+                  Export Notes
                 </button>
               )}
               <button
@@ -190,13 +155,13 @@ ${selectedTerm.diagram}
                 className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-lg transition-colors border border-gray-700"
               >
                 <FileText size={18} />
-                {showPomodoro ? (language === 'en' ? 'Hide' : 'Ascunde') : (language === 'en' ? 'Show' : 'Arată')} Pomodoro
+                {showPomodoro ? 'Hide' : 'Show'} Pomodoro
               </button>
             </div>
 
             {terms.length === 0 && (
               <div className="text-yellow-400 text-sm">
-                {language === 'en' ? 'No content yet. Database needs seeding.' : 'Niciun conținut încă. Baza de date necesită populare.'}
+                No content yet. Database needs seeding.
               </div>
             )}
           </div>
@@ -217,36 +182,23 @@ ${selectedTerm.diagram}
 
           {view === 'term' && !selectedTerm && terms.length === 0 && (
             <div className="max-w-3xl mx-auto bg-gray-800 rounded-xl p-12 text-center border border-gray-700">
-              <h2 className="text-3xl font-bold text-white mb-4">
-                {language === 'en' ? 'Welcome to Internship Prep' : 'Bine ai venit la Pregătire Internship'}
-              </h2>
+              <h2 className="text-3xl font-bold text-white mb-4">Welcome to Internship Prep</h2>
               <p className="text-gray-400 mb-6">
-                {language === 'en'
-                  ? 'Your comprehensive study guide is ready. The database needs to be seeded with content.'
-                  : 'Ghidul tău complet de studiu este pregătit. Baza de date necesită conținut.'}
+                Your comprehensive study guide is ready. The database needs to be seeded with content.
               </p>
               <p className="text-sm text-gray-500">
-                {language === 'en'
-                  ? 'Seed the database with study terms to get started.'
-                  : 'Populează baza de date cu termeni pentru a începe.'}
+                Seed the database with study terms to get started.
               </p>
             </div>
           )}
         </div>
       </main>
 
-      <AITutor
-        isOpen={tutorOpen}
-        onClose={() => setTutorOpen(false)}
-        currentTerm={selectedTerm}
-      />
+      <AITutor currentTerm={selectedTerm} />
 
       <div className="fixed bottom-4 right-4 bg-gray-800 border border-gray-700 rounded-lg p-3 text-xs text-gray-400 shadow-lg">
-        <p className="mb-1 font-bold text-cyan-400">
-          {language === 'en' ? 'Keyboard Shortcuts:' : 'Scurtături Tastatură:'}
-        </p>
-        <p><kbd className="bg-gray-700 px-1 rounded">T</kbd> - {language === 'en' ? 'Toggle AI Tutor' : 'Deschide/Închide AI Tutor'}</p>
-        <p><kbd className="bg-gray-700 px-1 rounded">P</kbd> - {language === 'en' ? 'Toggle Pomodoro' : 'Arată/Ascunde Pomodoro'}</p>
+        <p className="mb-1 font-bold text-cyan-400">Keyboard Shortcuts:</p>
+        <p><kbd className="bg-gray-700 px-1 rounded">P</kbd> - Toggle Pomodoro</p>
       </div>
     </div>
   );
