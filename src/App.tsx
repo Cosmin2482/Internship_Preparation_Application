@@ -195,11 +195,6 @@ ${selectedTerm.diagram}
       </main>
 
       <AITutor currentTerm={selectedTerm} />
-
-      <div className="fixed bottom-4 right-4 bg-gray-800 border border-gray-700 rounded-lg p-3 text-xs text-gray-400 shadow-lg">
-        <p className="mb-1 font-bold text-cyan-400">Keyboard Shortcuts:</p>
-        <p><kbd className="bg-gray-700 px-1 rounded">P</kbd> - Toggle Pomodoro</p>
-      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ export interface Category {
   name: string;
   slug: string;
   order_index: number;
+  priority?: string;
 }
 
 export interface Term {

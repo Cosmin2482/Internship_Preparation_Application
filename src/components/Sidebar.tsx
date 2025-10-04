@@ -86,7 +86,21 @@ export function Sidebar({
                     }
                     className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm flex items-center justify-between"
                   >
-                    <span>{category.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span>{category.name}</span>
+                      {category.priority === '99%' && (
+                        <span className="text-xs px-2 py-0.5 rounded bg-red-600 text-white font-bold">99%</span>
+                      )}
+                      {category.priority === 'likely' && (
+                        <span className="text-xs px-2 py-0.5 rounded bg-orange-600 text-white">Likely</span>
+                      )}
+                      {category.priority === 'medium' && (
+                        <span className="text-xs px-2 py-0.5 rounded bg-yellow-600 text-white">Medium</span>
+                      )}
+                      {category.priority === 'low' && (
+                        <span className="text-xs px-2 py-0.5 rounded bg-gray-600 text-white">Low</span>
+                      )}
+                    </div>
                     <span className="text-gray-500 text-xs">
                       {categoryTerms.length}
                     </span>
