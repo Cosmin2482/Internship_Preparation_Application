@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, ArrowRight, RefreshCw, BookOpen } from 'lucide-react';
+import { ArrowRight, RefreshCw, BookOpen, MessageSquare } from 'lucide-react';
 
 interface QuizQuestion {
   id: string;
@@ -19,7 +19,7 @@ export function QuizPractice() {
   const [userAnswer, setUserAnswer] = useState('');
   const [isChecking, setIsChecking] = useState(false);
   const [feedback, setFeedback] = useState<{
-    isCorrect: boolean;
+    isCorrect: boolean | null;
     aiResponse: string;
     modelAnswer: string;
     explanation: string;
@@ -80,17 +80,13 @@ export function QuizPractice() {
       // Sanitize inputs to prevent JSON issues
       const sanitize = (text: string) => text.replace(/[\n\r]/g, ' ').replace(/"/g, "'").trim();
 
-      const prompt = `You are evaluating a technical interview answer. Be strict but fair.
+      const prompt = `You are a friendly technical interviewer helping a candidate prepare. You're evaluating this answer:
 
 QUESTION: ${sanitize(currentQ.question)}
-CORRECT ANSWER: ${sanitize(correctAnswer)}
-STUDENT ANSWER: ${sanitize(userAnswer)}
+EXPECTED ANSWER: ${sanitize(correctAnswer)}
+CANDIDATE'S ANSWER: ${sanitize(userAnswer)}
 
-TASK: Determine if the student demonstrates correct understanding. They don't need exact wording, but the core concept must be accurate.
-
-IMPORTANT: You must respond with EXACTLY this format (no extra text):
-CORRECT: true or false
-FEEDBACK: one clear sentence explaining why`;
+Act like an interviewer: Give conversational feedback on their answer. Mention what they got right, what's missing or incorrect, and what the complete answer should include. Be encouraging but honest. Keep it to 3-4 sentences max.`;
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
@@ -100,8 +96,8 @@ FEEDBACK: one clear sentence explaining why`;
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
-              temperature: 0.1,
-              maxOutputTokens: 150,
+              temperature: 0.3,
+              maxOutputTokens: 300,
               candidateCount: 1
             }
           })
@@ -135,64 +131,12 @@ FEEDBACK: one clear sentence explaining why`;
         throw new Error('No response from AI - empty text content');
       }
 
-      // Parse the simple text format with robust error handling
+      // Just use the conversational feedback from AI
       console.log('Raw AI response:', aiText);
 
-      let evaluation = { isCorrect: false, feedback: '' };
-
-      try {
-        // Try to parse the CORRECT: and FEEDBACK: format
-        const correctMatch = aiText.match(/CORRECT:\s*(true|false)/i);
-        const feedbackMatch = aiText.match(/FEEDBACK:\s*(.+?)(?:\n|$)/i);
-
-        if (correctMatch) {
-          evaluation.isCorrect = correctMatch[1].toLowerCase() === 'true';
-        } else {
-          // Fallback: look for key indicators
-          const textLower = aiText.toLowerCase();
-
-          const hasIncorrectSignals = (
-            textLower.includes('incorrect') ||
-            textLower.includes('not correct') ||
-            textLower.includes('wrong') ||
-            textLower.includes('false')
-          );
-
-          const hasCorrectSignals = (
-            textLower.includes('correct understanding') ||
-            textLower.includes('demonstrates understanding') ||
-            (textLower.includes('true') && !hasIncorrectSignals)
-          );
-
-          evaluation.isCorrect = hasCorrectSignals && !hasIncorrectSignals;
-        }
-
-        if (feedbackMatch) {
-          evaluation.feedback = feedbackMatch[1].trim();
-        } else {
-          // Use the whole response as feedback if format is unexpected
-          evaluation.feedback = aiText.trim();
-        }
-
-        // Ensure feedback is not empty
-        if (!evaluation.feedback) {
-          evaluation.feedback = evaluation.isCorrect
-            ? 'Your answer demonstrates correct understanding.'
-            : 'Your answer does not match the expected concept. Please review the model answer.';
-        }
-
-      } catch (parseError) {
-        console.error('Parse error:', parseError);
-        // Ultra-safe fallback
-        evaluation = {
-          isCorrect: false,
-          feedback: 'Unable to evaluate response format. Please check the model answer and explanation below for guidance.'
-        };
-      }
-
       setFeedback({
-        isCorrect: evaluation.isCorrect === true,
-        aiResponse: evaluation.feedback,
+        isCorrect: null, // No strict correct/incorrect - just conversational feedback
+        aiResponse: aiText.trim() || 'No feedback received. Please try again.',
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
@@ -293,23 +237,13 @@ FEEDBACK: one clear sentence explaining why`;
           </div>
         ) : (
           <div className="space-y-4">
-            <div className={`flex items-start gap-3 p-4 rounded-lg ${
-              feedback.isCorrect
-                ? 'bg-green-900/20 border border-green-800'
-                : 'bg-red-900/20 border border-red-800'
-            }`}>
-              {feedback.isCorrect ? (
-                <CheckCircle className="text-green-500 shrink-0 mt-1" size={24} />
-              ) : (
-                <XCircle className="text-red-500 shrink-0 mt-1" size={24} />
-              )}
+            <div className="flex items-start gap-3 p-4 rounded-lg bg-blue-900/20 border border-blue-800">
+              <MessageSquare className="text-blue-400 shrink-0 mt-1" size={24} />
               <div className="flex-1">
-                <h4 className={`font-semibold mb-2 ${
-                  feedback.isCorrect ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {feedback.isCorrect ? 'Correct!' : 'Not Quite'}
+                <h4 className="font-semibold mb-2 text-blue-400">
+                  Interviewer Feedback
                 </h4>
-                <p className="text-gray-300 text-sm mb-3">
+                <p className="text-gray-300 text-sm mb-3 leading-relaxed">
                   {feedback.aiResponse}
                 </p>
                 <div className="space-y-2 text-sm">
@@ -318,11 +252,11 @@ FEEDBACK: one clear sentence explaining why`;
                     <span className="text-white">{userAnswer}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400">Model Answer: </span>
+                    <span className="text-gray-400">Expected Answer: </span>
                     <span className="text-cyan-400 font-medium">{feedback.modelAnswer}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400">Explanation: </span>
+                    <span className="text-gray-400">Additional Context: </span>
                     <span className="text-gray-300">{feedback.explanation}</span>
                   </div>
                 </div>
