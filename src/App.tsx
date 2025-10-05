@@ -11,6 +11,7 @@ import { AIFeatures } from './components/AIFeatures';
 import { InterviewTips } from './components/InterviewTips';
 import { QuizPractice } from './components/QuizPractice';
 import { BibliaGiga } from './components/BibliaGiga';
+import { ApiKeyWarning } from './components/ApiKeyWarning';
 import { Loader, Download, FileText } from 'lucide-react';
 
 type View = 'term' | 'labs' | 'hr' | 'ai-tools' | 'tips' | 'quiz' | 'biblia-giga';
@@ -132,6 +133,7 @@ ${selectedTerm.diagram}
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
+      <ApiKeyWarning />
       <Sidebar
         categories={categories}
         terms={terms}

@@ -10,7 +10,8 @@ interface QuizQuestion {
   term: string;
 }
 
-// Smart feedback system - no external API needed
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GEMINI_MODEL = 'gemini-1.5-flash';
 
 export function QuizPractice() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -75,51 +76,58 @@ export function QuizPractice() {
     const currentQ = questions[currentIndex];
     const correctAnswer = currentQ.choices[currentQ.correct_index];
 
-    // Generate smart feedback without AI (Gemini API is unreliable)
-    const generateSmartFeedback = () => {
-      const userLower = userAnswer.toLowerCase().trim();
-      const correctLower = correctAnswer.toLowerCase().trim();
-
-      if (userLower === correctLower) {
-        return `✓ Excellent! That's exactly right. ${currentQ.explanation}`;
-      }
-
-      if (correctLower.includes(userLower) && userLower.length > 8) {
-        return `Good start! Your answer "${userAnswer}" captures part of it. The complete answer is: "${correctAnswer}". ${currentQ.explanation}`;
-      }
-
-      if (userLower.includes(correctLower)) {
-        return `You're on the right track! The concise answer is: "${correctAnswer}". ${currentQ.explanation}`;
-      }
-
-      const userWords = new Set(userLower.split(/\s+/).filter(w => w.length > 3));
-      const correctWords = new Set(correctLower.split(/\s+/).filter(w => w.length > 3));
-      const matching = [...userWords].filter(w => correctWords.has(w));
-
-      if (matching.length > 0) {
-        return `You mentioned "${matching.slice(0, 2).join(', ')}" which is relevant. The expected answer is: "${correctAnswer}". ${currentQ.explanation}`;
-      }
-
-      return `Your answer differs from the expected one. The correct answer is: "${correctAnswer}". ${currentQ.explanation}`;
-    };
-
     try {
-      const feedbackMessage = generateSmartFeedback();
+      const prompt = `You are a technical interviewer. Compare the student's answer to the expected answer and provide brief, encouraging feedback (2-3 sentences).
+
+Question: ${currentQ.question}
+Expected Answer: ${correctAnswer}
+Student Answer: ${userAnswer}
+
+Provide conversational feedback highlighting what's correct, what's missing, and guidance.`;
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 2048,
+              topP: 0.95,
+              topK: 40
+            }
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+      if (!aiText) {
+        throw new Error('Empty response from AI');
+      }
+
       setFeedback({
         isCorrect: null,
-        aiResponse: feedbackMessage,
+        aiResponse: aiText.trim(),
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
-      setIsChecking(false);
     } catch (error) {
       console.error('Error checking answer:', error);
       setFeedback({
         isCorrect: null,
-        aiResponse: `The correct answer is: "${correctAnswer}". ${currentQ.explanation}`,
+        aiResponse: `The expected answer is: "${correctAnswer}". ${currentQ.explanation}`,
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
+    } finally {
       setIsChecking(false);
     }
   };
