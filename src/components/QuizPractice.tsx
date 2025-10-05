@@ -77,17 +77,11 @@ export function QuizPractice() {
     const correctAnswer = currentQ.choices[currentQ.correct_index];
 
     try {
-      const prompt = `You are grading a technical interview answer.
-
-Question: ${currentQ.question}
+      const prompt = `Evaluate this technical interview answer. Question: ${currentQ.question}
 Correct Answer: ${correctAnswer}
 Student's Answer: ${userAnswer}
 
-Evaluate if the student's answer demonstrates correct understanding. They don't need to match word-for-word, but the core concept must be accurate.
-
-Provide:
-1. isCorrect: true/false
-2. feedback: Brief explanation of why their answer is correct or what's missing (2-3 sentences)`;
+Grade the student's understanding. They don't need exact wording, but the core concept must be accurate.`;
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
@@ -97,8 +91,22 @@ Provide:
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
-              temperature: 0.3,
-              maxOutputTokens: 500
+              temperature: 0.2,
+              maxOutputTokens: 300,
+              responseMimeType: 'application/json',
+              responseSchema: {
+                type: 'OBJECT',
+                properties: {
+                  isCorrect: {
+                    type: 'BOOLEAN',
+                    description: 'True if the student demonstrates correct understanding of the concept, false otherwise'
+                  },
+                  feedback: {
+                    type: 'STRING',
+                    description: 'Brief explanation (2-3 sentences) of why the answer is correct or what is missing/wrong'
+                  }
+                }
+              }
             }
           })
         }
@@ -116,13 +124,12 @@ Provide:
         throw new Error('No response from AI');
       }
 
-      const isCorrectMatch = aiText.toLowerCase().includes('true') ||
-                            aiText.toLowerCase().includes('correct') ||
-                            aiText.toLowerCase().includes('isCorrect: true');
+      // Parse the JSON response
+      const evaluation = JSON.parse(aiText);
 
       setFeedback({
-        isCorrect: isCorrectMatch,
-        aiResponse: aiText,
+        isCorrect: evaluation.isCorrect === true,
+        aiResponse: evaluation.feedback,
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
