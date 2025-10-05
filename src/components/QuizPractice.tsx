@@ -77,7 +77,7 @@ export function QuizPractice() {
     const correctAnswer = currentQ.choices[currentQ.correct_index];
 
     try {
-      const prompt = `You are a technical interviewer. Compare the student's answer to the expected answer and provide brief, encouraging feedback (2-3 sentences).
+      const prompt = `You are a technical interviewer. Compare the student's answer to the expected answer and provide brief feedback (2-3 sentences).
 
 Question: ${currentQ.question}
 Expected Answer: ${correctAnswer}
