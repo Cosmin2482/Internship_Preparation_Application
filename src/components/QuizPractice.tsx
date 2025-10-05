@@ -11,7 +11,7 @@ interface QuizQuestion {
 }
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_MODEL = 'gemini-1.5-flash'; // Correct model name!
+const GEMINI_MODEL = 'gemini-2.5-flash'; // Correct model name!
 
 export function QuizPractice() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
