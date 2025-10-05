@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Search, Copy, Check, BookMarked } from 'lucide-react';
+import { BibliaQuestions } from './BibliaQuestions';
 
 export function BibliaGiga() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -219,7 +220,9 @@ export function BibliaGiga() {
         </p>
       </div>
 
-      <div className="bg-gray-800 rounded-xl p-6 mb-8 border border-gray-700">
+      <BibliaQuestions />
+
+      <div className="bg-gray-800 rounded-xl p-6 my-8 border border-gray-700">
         <div className="flex items-center gap-3 mb-4">
           <Search className="text-cyan-400" size={24} />
           <h2 className="text-2xl font-bold text-white">Caută în glosar</h2>
