@@ -11,7 +11,7 @@ interface QuizQuestion {
 }
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_MODEL = 'gemini-1.5-flash'; // Correct model name!
 
 export function QuizPractice() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -124,13 +124,18 @@ Act like an interviewer: Give conversational feedback on their answer. Mention w
       if (!aiText) {
         console.error('Empty response from AI. Full result:', result);
         console.error('Finish reason:', finishReason);
+        console.error('Candidates:', result.candidates);
 
-        // Only throw error if we truly have no content
-        if (finishReason === 'SAFETY' || finishReason === 'RECITATION') {
-          throw new Error(`Content blocked: ${finishReason}`);
-        }
+        // Provide a helpful fallback instead of throwing error
+        const fallbackMessage = `I wasn't able to provide AI feedback at this moment (${finishReason || 'no response'}), but let me explain the answer:\n\nThe expected answer is: "${correctAnswer}"\n\n${currentQ.explanation}`;
 
-        throw new Error('No response from AI - empty text content');
+        setFeedback({
+          isCorrect: null,
+          aiResponse: fallbackMessage,
+          modelAnswer: correctAnswer,
+          explanation: currentQ.explanation
+        });
+        return; // Exit early with fallback
       }
 
       // If we have text but hit MAX_TOKENS, just use what we got
@@ -141,7 +146,7 @@ Act like an interviewer: Give conversational feedback on their answer. Mention w
 
       setFeedback({
         isCorrect: null, // No strict correct/incorrect - just conversational feedback
-        aiResponse: aiText.trim() || 'No feedback received. Please try again.',
+        aiResponse: aiText.trim(),
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
