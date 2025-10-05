@@ -197,6 +197,331 @@ const labs: Lab[] = [
       'Handle edge case of empty array'
     ]
   },
+  {
+    id: 'binary-search',
+    title: 'Binary Search',
+    description: 'Caută un element într-un array sortat folosind binary search. Returnează indexul sau -1.',
+    difficulty: 'medium',
+    category: 'Algorithms',
+    starterCode: `function binarySearch(arr, target) {
+  // Your code here
+
+}`,
+    solution: `function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) return mid;
+    if (arr[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+  return -1;
+}`,
+    testCases: [
+      { input: '[1,2,3,4,5,6,7], 4', expected: '3', description: 'Found in middle' },
+      { input: '[1,3,5,7,9], 1', expected: '0', description: 'Found at start' },
+      { input: '[2,4,6,8,10], 10', expected: '4', description: 'Found at end' },
+      { input: '[1,2,3,4,5], 6', expected: '-1', description: 'Not found' },
+    ],
+    hints: [
+      'Use two pointers: left and right',
+      'Calculate middle index',
+      'Compare middle element with target'
+    ]
+  },
+  {
+    id: 'merge-sorted',
+    title: 'Merge Sorted Arrays',
+    description: 'Îmbină două array-uri sortate într-un singur array sortat.',
+    difficulty: 'medium',
+    category: 'Arrays',
+    starterCode: `function mergeSorted(arr1, arr2) {
+  // Your code here
+
+}`,
+    solution: `function mergeSorted(arr1, arr2) {
+  const result = [];
+  let i = 0, j = 0;
+  while (i < arr1.length && j < arr2.length) {
+    if (arr1[i] <= arr2[j]) {
+      result.push(arr1[i++]);
+    } else {
+      result.push(arr2[j++]);
+    }
+  }
+  return result.concat(arr1.slice(i)).concat(arr2.slice(j));
+}`,
+    testCases: [
+      { input: '[1,3,5], [2,4,6]', expected: '1,2,3,4,5,6', description: 'Interleaved' },
+      { input: '[1,2,3], [4,5,6]', expected: '1,2,3,4,5,6', description: 'Sequential' },
+      { input: '[], [1,2,3]', expected: '1,2,3', description: 'One empty' },
+      { input: '[1], [2]', expected: '1,2', description: 'Single elements' },
+    ],
+    hints: [
+      'Use two pointers for both arrays',
+      'Compare elements and pick smaller',
+      'Append remaining elements'
+    ]
+  },
+  {
+    id: 'linked-list',
+    title: 'Linked List Basics',
+    description: 'Creează o funcție care returnează al n-lea element dintr-o listă înlănțuită simulată ca array.',
+    difficulty: 'easy',
+    category: 'Data Structures',
+    starterCode: `function getNthElement(list, n) {
+  // Your code here
+
+}`,
+    solution: `function getNthElement(list, n) {
+  if (n < 0 || n >= list.length) return null;
+  return list[n];
+}`,
+    testCases: [
+      { input: '[10,20,30,40], 2', expected: '30', description: 'Middle element' },
+      { input: '[5,15,25], 0', expected: '5', description: 'First element' },
+      { input: '[1,2,3,4,5], 4', expected: '5', description: 'Last element' },
+      { input: '[100], 1', expected: 'null', description: 'Out of bounds' },
+    ],
+    hints: [
+      'Check if n is within bounds',
+      'Return element at index n',
+      'Return null for invalid index'
+    ]
+  },
+  {
+    id: 'oop-constructor',
+    title: 'OOP: Constructor & Properties',
+    description: 'Creează o clasă Person cu constructor(name, age) și metodă greet() care returnează "Hello, I\'m [name]".',
+    difficulty: 'easy',
+    category: 'OOP',
+    starterCode: `class Person {
+  // Your code here
+
+}
+
+// Test: const p = new Person("John", 25); p.greet();`,
+    solution: `class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    return "Hello, I'm " + this.name;
+  }
+}`,
+    testCases: [
+      { input: '"John", 25', expected: "Hello, I'm John", description: 'Basic greeting' },
+      { input: '"Alice", 30', expected: "Hello, I'm Alice", description: 'Different name' },
+      { input: '"Bob", 20', expected: "Hello, I'm Bob", description: 'Another person' },
+      { input: '"Eve", 28', expected: "Hello, I'm Eve", description: 'Short name' },
+    ],
+    hints: [
+      'Use constructor to initialize properties',
+      'Store name and age as instance properties',
+      'greet() method should return a string'
+    ]
+  },
+  {
+    id: 'oop-inheritance',
+    title: 'OOP: Inheritance & Polymorphism',
+    description: 'Creează Shape cu area() și Rectangle extends Shape care calculează area corect.',
+    difficulty: 'medium',
+    category: 'OOP',
+    starterCode: `class Shape {
+  area() {
+    return 0;
+  }
+}
+
+class Rectangle extends Shape {
+  // Your code here
+
+}
+
+// Test: const r = new Rectangle(5, 10); r.area();`,
+    solution: `class Shape {
+  area() {
+    return 0;
+  }
+}
+
+class Rectangle extends Shape {
+  constructor(width, height) {
+    super();
+    this.width = width;
+    this.height = height;
+  }
+
+  area() {
+    return this.width * this.height;
+  }
+}`,
+    testCases: [
+      { input: '5, 10', expected: '50', description: 'Rectangle 5x10' },
+      { input: '3, 7', expected: '21', description: 'Rectangle 3x7' },
+      { input: '4, 4', expected: '16', description: 'Square 4x4' },
+      { input: '1, 100', expected: '100', description: 'Thin rectangle' },
+    ],
+    hints: [
+      'Extend Shape class',
+      'Override area() method',
+      'Calculate width * height'
+    ]
+  },
+  {
+    id: 'oop-interface',
+    title: 'OOP: Interface Implementation',
+    description: 'Creează o clasă Calculator cu metodele add(a,b), subtract(a,b), multiply(a,b).',
+    difficulty: 'easy',
+    category: 'OOP',
+    starterCode: `class Calculator {
+  // Your code here
+
+}
+
+// Test: const c = new Calculator(); c.add(5, 3);`,
+    solution: `class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+
+  subtract(a, b) {
+    return a - b;
+  }
+
+  multiply(a, b) {
+    return a * b;
+  }
+}`,
+    testCases: [
+      { input: '5, 3', expected: '8', description: 'Addition' },
+      { input: '10, 4', expected: '6', description: 'Subtraction (using subtract)' },
+      { input: '6, 7', expected: '42', description: 'Multiplication (using multiply)' },
+      { input: '0, 5', expected: '5', description: 'Add with zero' },
+    ],
+    hints: [
+      'Implement three methods',
+      'add returns a + b',
+      'subtract returns a - b, multiply returns a * b'
+    ]
+  },
+  {
+    id: 'sql-select',
+    title: 'SQL: Basic SELECT',
+    description: 'Scrie o funcție care simulează SELECT * FROM users WHERE age > minAge',
+    difficulty: 'easy',
+    category: 'SQL',
+    starterCode: `function selectUsers(users, minAge) {
+  // Filter users where age > minAge
+  // Return filtered array
+
+}`,
+    solution: `function selectUsers(users, minAge) {
+  return users.filter(u => u.age > minAge);
+}`,
+    testCases: [
+      { input: '[{"name":"John","age":25},{"name":"Jane","age":30}], 20', expected: '2', description: 'Both match' },
+      { input: '[{"name":"John","age":25},{"name":"Jane","age":30}], 26', expected: '1', description: 'One match' },
+      { input: '[{"name":"John","age":25},{"name":"Jane","age":30}], 40', expected: '0', description: 'None match' },
+      { input: '[{"name":"Alice","age":35}], 30', expected: '1', description: 'Single match' },
+    ],
+    hints: [
+      'Use filter() method',
+      'Check age > minAge',
+      'Return filtered array length for test'
+    ]
+  },
+  {
+    id: 'sql-join',
+    title: 'SQL: JOIN Simulation',
+    description: 'Simulează INNER JOIN între users și orders bazat pe userId',
+    difficulty: 'medium',
+    category: 'SQL',
+    starterCode: `function joinTables(users, orders) {
+  // Join users with orders on userId
+  // Return array of {userName, orderTotal}
+
+}`,
+    solution: `function joinTables(users, orders) {
+  return orders.map(order => {
+    const user = users.find(u => u.id === order.userId);
+    return { userName: user?.name || 'Unknown', orderTotal: order.total };
+  });
+}`,
+    testCases: [
+      { input: '[{"id":1,"name":"John"}], [{"userId":1,"total":100}]', expected: '1', description: 'Single join' },
+      { input: '[{"id":1,"name":"John"},{"id":2,"name":"Jane"}], [{"userId":1,"total":50},{"userId":2,"total":75}]', expected: '2', description: 'Multiple joins' },
+      { input: '[{"id":1,"name":"John"}], []', expected: '0', description: 'No orders' },
+      { input: '[{"id":1,"name":"John"}], [{"userId":1,"total":25},{"userId":1,"total":50}]', expected: '2', description: 'Multiple orders same user' },
+    ],
+    hints: [
+      'Use map() on orders',
+      'Find matching user for each order',
+      'Combine user and order data'
+    ]
+  },
+  {
+    id: 'sql-aggregate',
+    title: 'SQL: COUNT & SUM',
+    description: 'Calculează suma totală a orderelor (SUM) și numărul de ordere (COUNT)',
+    difficulty: 'easy',
+    category: 'SQL',
+    starterCode: `function aggregateOrders(orders) {
+  // Return {count: number, sum: total}
+
+}`,
+    solution: `function aggregateOrders(orders) {
+  return {
+    count: orders.length,
+    sum: orders.reduce((acc, o) => acc + o.total, 0)
+  };
+}`,
+    testCases: [
+      { input: '[{"total":100},{"total":200}]', expected: '2,300', description: 'Two orders' },
+      { input: '[{"total":50},{"total":50},{"total":50}]', expected: '3,150', description: 'Three orders' },
+      { input: '[{"total":1000}]', expected: '1,1000', description: 'Single order' },
+      { input: '[]', expected: '0,0', description: 'No orders' },
+    ],
+    hints: [
+      'Use length for COUNT',
+      'Use reduce() for SUM',
+      'Return object with both values'
+    ]
+  },
+  {
+    id: 'sql-group-by',
+    title: 'SQL: GROUP BY Simulation',
+    description: 'Grupează ordere după userId și calculează total per user',
+    difficulty: 'medium',
+    category: 'SQL',
+    starterCode: `function groupByUser(orders) {
+  // Group by userId and sum totals
+  // Return array of {userId, total}
+
+}`,
+    solution: `function groupByUser(orders) {
+  const groups = {};
+  orders.forEach(o => {
+    if (!groups[o.userId]) groups[o.userId] = 0;
+    groups[o.userId] += o.total;
+  });
+  return Object.entries(groups).map(([userId, total]) => ({userId: Number(userId), total}));
+}`,
+    testCases: [
+      { input: '[{"userId":1,"total":100},{"userId":1,"total":50}]', expected: '1', description: 'One user, two orders' },
+      { input: '[{"userId":1,"total":100},{"userId":2,"total":200}]', expected: '2', description: 'Two users' },
+      { input: '[{"userId":1,"total":50},{"userId":2,"total":75},{"userId":1,"total":25}]', expected: '2', description: 'Mixed orders' },
+      { input: '[]', expected: '0', description: 'Empty' },
+    ],
+    hints: [
+      'Use object to store groups',
+      'Accumulate totals per userId',
+      'Convert object to array'
+    ]
+  },
 ];
 
 export function Labs() {
@@ -218,8 +543,8 @@ export function Labs() {
     if (!selectedLab) return;
 
     try {
-      // Create function from code
-      const userFunction = new Function('return ' + code)();
+      // Evaluate code (supports both functions and classes)
+      const evaluatedCode = new Function(code + '; return ' + (code.includes('class') ? code.match(/class (\w+)/)?.[1] : code.match(/function (\w+)/)?.[1]))();
 
       const results = selectedLab.testCases.map(testCase => {
         try {
@@ -235,11 +560,39 @@ export function Labs() {
             return trimmed === '' ? null : Number(trimmed);
           });
 
-          // Run function
-          const result = userFunction(...args);
+          let result;
+          // Check if it's a class (OOP exercise)
+          if (selectedLab.category === 'OOP') {
+            const instance = new evaluatedCode(...args);
+            // For OOP exercises, test specific methods
+            if (selectedLab.id === 'oop-constructor') {
+              result = instance.greet();
+            } else if (selectedLab.id === 'oop-inheritance') {
+              result = instance.area();
+            } else if (selectedLab.id === 'oop-interface') {
+              result = instance.add(args[0], args[1]);
+            }
+          } else {
+            // Regular function
+            result = evaluatedCode(...args);
+          }
 
-          // Compare result
-          const resultStr = Array.isArray(result) ? result.join(',') : String(result);
+          // Compare result - handle different types
+          let resultStr;
+          if (selectedLab.category === 'SQL') {
+            // For SQL exercises, handle special cases
+            if (selectedLab.id === 'sql-select' || selectedLab.id === 'sql-join' || selectedLab.id === 'sql-group-by') {
+              resultStr = Array.isArray(result) ? String(result.length) : '0';
+            } else if (selectedLab.id === 'sql-aggregate') {
+              resultStr = result.count + ',' + result.sum;
+            }
+          } else if (Array.isArray(result)) {
+            resultStr = result.join(',');
+          } else if (typeof result === 'object' && result !== null) {
+            resultStr = Object.values(result).join(',');
+          } else {
+            resultStr = String(result);
+          }
           const passed = resultStr === testCase.expected;
 
           return {
