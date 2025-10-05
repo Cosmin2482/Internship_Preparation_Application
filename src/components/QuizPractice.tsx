@@ -10,8 +10,7 @@ interface QuizQuestion {
   term: string;
 }
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_MODEL = 'gemini-2.5-flash'; // Correct model name!
+// Smart feedback system - no external API needed
 
 export function QuizPractice() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -76,95 +75,51 @@ export function QuizPractice() {
     const currentQ = questions[currentIndex];
     const correctAnswer = currentQ.choices[currentQ.correct_index];
 
+    // Generate smart feedback without AI (Gemini API is unreliable)
+    const generateSmartFeedback = () => {
+      const userLower = userAnswer.toLowerCase().trim();
+      const correctLower = correctAnswer.toLowerCase().trim();
+
+      if (userLower === correctLower) {
+        return `✓ Excellent! That's exactly right. ${currentQ.explanation}`;
+      }
+
+      if (correctLower.includes(userLower) && userLower.length > 8) {
+        return `Good start! Your answer "${userAnswer}" captures part of it. The complete answer is: "${correctAnswer}". ${currentQ.explanation}`;
+      }
+
+      if (userLower.includes(correctLower)) {
+        return `You're on the right track! The concise answer is: "${correctAnswer}". ${currentQ.explanation}`;
+      }
+
+      const userWords = new Set(userLower.split(/\s+/).filter(w => w.length > 3));
+      const correctWords = new Set(correctLower.split(/\s+/).filter(w => w.length > 3));
+      const matching = [...userWords].filter(w => correctWords.has(w));
+
+      if (matching.length > 0) {
+        return `You mentioned "${matching.slice(0, 2).join(', ')}" which is relevant. The expected answer is: "${correctAnswer}". ${currentQ.explanation}`;
+      }
+
+      return `Your answer differs from the expected one. The correct answer is: "${correctAnswer}". ${currentQ.explanation}`;
+    };
+
     try {
-      // Sanitize and truncate to prevent token overflow
-      const sanitize = (text: string) => {
-        return text
-          .replace(/[\n\r]/g, ' ')
-          .replace(/"/g, "'")
-          .trim()
-          .substring(0, 200); // Limit to 200 chars each
-      };
-
-      const prompt = `Interview feedback:
-Q: ${sanitize(currentQ.question)}
-Expected: ${sanitize(correctAnswer)}
-Student: ${sanitize(userAnswer)}
-
-Give brief, encouraging feedback (2-3 sentences): what's right, what's missing, what to add.`;
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: 0.3,
-              maxOutputTokens: 200,
-              candidateCount: 1
-            }
-          })
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API Error: ${response.status} - ${errorText}`);
-      }
-
-      const result = await response.json();
-      console.log('Full Gemini response:', JSON.stringify(result, null, 2));
-
-      // Check if response was blocked or filtered
-      if (result.promptFeedback?.blockReason) {
-        throw new Error(`Content blocked: ${result.promptFeedback.blockReason}`);
-      }
-
-      const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const finishReason = result.candidates?.[0]?.finishReason;
-
-      // Check if we have no text at all
-      if (!aiText) {
-        console.error('Empty response from AI. Full result:', result);
-        console.error('Finish reason:', finishReason);
-        console.error('Candidates:', result.candidates);
-
-        // Provide a helpful fallback instead of throwing error
-        const fallbackMessage = `I wasn't able to provide AI feedback at this moment (${finishReason || 'no response'}), but let me explain the answer:\n\nThe expected answer is: "${correctAnswer}"\n\n${currentQ.explanation}`;
-
-        setFeedback({
-          isCorrect: null,
-          aiResponse: fallbackMessage,
-          modelAnswer: correctAnswer,
-          explanation: currentQ.explanation
-        });
-        return; // Exit early with fallback
-      }
-
-      // If we have text but hit MAX_TOKENS, just use what we got
-      console.log('Raw AI response:', aiText);
-      if (finishReason === 'MAX_TOKENS') {
-        console.warn('Response was truncated due to MAX_TOKENS, but using what we received');
-      }
-
+      const feedbackMessage = generateSmartFeedback();
       setFeedback({
-        isCorrect: null, // No strict correct/incorrect - just conversational feedback
-        aiResponse: aiText.trim(),
+        isCorrect: null,
+        aiResponse: feedbackMessage,
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
+      setIsChecking(false);
     } catch (error) {
       console.error('Error checking answer:', error);
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       setFeedback({
-        isCorrect: false,
-        aiResponse: `Error: ${errorMsg}. Please check your internet connection and API key configuration.`,
+        isCorrect: null,
+        aiResponse: `The correct answer is: "${correctAnswer}". ${currentQ.explanation}`,
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
-    } finally {
       setIsChecking(false);
     }
   };
