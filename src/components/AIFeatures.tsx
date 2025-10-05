@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Sparkles, MessageSquare, Brain, Loader2 } from 'lucide-react';
 
-const GEMINI_API_KEY = 'AIzaSyCykwCFKnZxkXtVwzI9utzJr0Z4JCGn0TE';
-const GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GEMINI_MODEL = 'gemini-1.5-flash';
 
 interface QuizQuestion {
   question: string;
@@ -62,14 +62,22 @@ export function AIFeatures() {
         }
       );
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
+
       const result = await response.json();
       const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
       if (jsonText) {
         const questions = JSON.parse(jsonText);
         setQuizQuestions(questions);
+      } else {
+        throw new Error('No response from AI');
       }
     } catch (error) {
       console.error('Quiz generation error:', error);
+      alert(`Error generating quiz: ${error instanceof Error ? error.message : 'Unknown error'}. Please check your API key configuration.`);
     } finally {
       setLoading(false);
     }
@@ -95,11 +103,20 @@ export function AIFeatures() {
         }
       );
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
+
       const result = await response.json();
-      const text = result.candidates?.[0]?.content?.parts?.[0]?.text || 'Error: Could not generate explanation.';
+      const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) {
+        throw new Error('No response from AI');
+      }
       setConceptExplanation(text);
     } catch (error) {
       console.error('Concept explanation error:', error);
+      setConceptExplanation(`Error: ${error instanceof Error ? error.message : 'Could not generate explanation'}. Please check your API key configuration.`);
     } finally {
       setLoading(false);
     }
@@ -144,14 +161,22 @@ export function AIFeatures() {
         }
       );
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
+
       const result = await response.json();
       const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
       if (jsonText) {
         const data = JSON.parse(jsonText);
         setBehavioralQuestion(data);
+      } else {
+        throw new Error('No response from AI');
       }
     } catch (error) {
       console.error('Behavioral simulation error:', error);
+      alert(`Error generating question: ${error instanceof Error ? error.message : 'Unknown error'}. Please check your API key configuration.`);
     } finally {
       setLoading(false);
     }

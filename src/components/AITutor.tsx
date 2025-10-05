@@ -11,8 +11,9 @@ interface Message {
   content: string;
 }
 
-const GEMINI_API_KEY = 'AIzaSyCykwCFKnZxkXtVwzI9utzJr0Z4JCGn0TE';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 export function AITutor({ currentTerm }: AITutorProps) {
   const [isMinimized, setIsMinimized] = useState(true);
@@ -137,9 +138,10 @@ Provide a helpful, clear response:`;
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error calling Gemini API:', error);
+      const errorDetails = error instanceof Error ? error.message : 'Unknown error';
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.'
+        content: `I encountered an error: ${errorDetails}. Please make sure the API key is configured correctly and try again.`
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {

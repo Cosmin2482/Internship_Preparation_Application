@@ -11,7 +11,7 @@ interface QuizQuestion {
 }
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_MODEL = 'gemini-2.0-flash-exp';
+const GEMINI_MODEL = 'gemini-1.5-flash';
 
 export function QuizPractice() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -104,11 +104,21 @@ Provide:
         }
       );
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
+
       const result = await response.json();
-      const aiText = result.candidates[0]?.content?.parts[0]?.text || '';
+      const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+      if (!aiText) {
+        throw new Error('No response from AI');
+      }
 
       const isCorrectMatch = aiText.toLowerCase().includes('true') ||
-                            aiText.toLowerCase().includes('correct');
+                            aiText.toLowerCase().includes('correct') ||
+                            aiText.toLowerCase().includes('isCorrect: true');
 
       setFeedback({
         isCorrect: isCorrectMatch,
@@ -118,9 +128,10 @@ Provide:
       });
     } catch (error) {
       console.error('Error checking answer:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       setFeedback({
         isCorrect: false,
-        aiResponse: 'Error checking answer. Please try again.',
+        aiResponse: `Error: ${errorMsg}. Please check your internet connection and API key configuration.`,
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
