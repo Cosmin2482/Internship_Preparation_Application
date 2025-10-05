@@ -73,9 +73,14 @@ export function Sidebar({
 
           <div className="space-y-2">
             {categories.map((category) => {
-              const categoryTerms = (termsByCategory[category.id] || []).sort(
-                (a, b) => a.order_index - b.order_index
-              );
+              // Sort terms by priority first, then order_index
+              const priorityOrder = { '99%': 1, 'likely': 2, 'medium': 3, 'low': 4 };
+              const categoryTerms = (termsByCategory[category.id] || []).sort((a, b) => {
+                const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] || 3;
+                const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] || 3;
+                if (aPriority !== bPriority) return aPriority - bPriority;
+                return a.order_index - b.order_index;
+              });
               const isExpanded = expandedCategory === category.id;
 
               return (
@@ -112,13 +117,22 @@ export function Sidebar({
                         <button
                           key={term.id}
                           onClick={() => onTermSelect(term.id)}
-                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between gap-2 ${
                             selectedTermId === term.id
                               ? 'bg-cyan-600 text-white'
                               : 'text-gray-300 hover:bg-gray-800'
                           }`}
                         >
-                          {term.term}
+                          <span className="flex-1">{term.term}</span>
+                          {term.priority === '99%' && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-red-600 text-white font-bold shrink-0">99%</span>
+                          )}
+                          {term.priority === 'likely' && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-orange-600 text-white shrink-0">Likely</span>
+                          )}
+                          {term.priority === 'low' && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-gray-600 text-white shrink-0">Low</span>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -128,14 +142,6 @@ export function Sidebar({
             })}
           </div>
         </nav>
-
-        <div className="p-4 border-t border-gray-700 text-xs text-gray-500">
-          <p>Keyboard shortcuts:</p>
-          <ul className="mt-2 space-y-1">
-            <li><kbd className="px-1 bg-gray-800 rounded">T</kbd> - AI Tutor</li>
-            <li><kbd className="px-1 bg-gray-800 rounded">/</kbd> - Search</li>
-          </ul>
-        </div>
       </aside>
     </>
   );

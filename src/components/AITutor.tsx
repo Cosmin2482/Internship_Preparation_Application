@@ -30,7 +30,7 @@ export function AITutor({ currentTerm }: AITutorProps) {
   }, [messages]);
 
   useEffect(() => {
-    if (!isMinimized && messages.length === 0 && currentTerm) {
+    if (!isMinimized && currentTerm) {
       setMessages([
         {
           role: 'assistant',

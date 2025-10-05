@@ -20,6 +20,7 @@ export interface Term {
   };
   diagram: string;
   order_index: number;
+  priority?: string;
 }
 
 export interface QuizQuestion {
