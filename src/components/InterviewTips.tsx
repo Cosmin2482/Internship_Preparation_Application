@@ -13,6 +13,136 @@ export function InterviewTips() {
         </p>
       </div>
 
+      {/* Cheat Sheet - Keep This Open During Interview */}
+      <div className="bg-gradient-to-br from-orange-600 to-red-600 text-white rounded-xl p-6 border-4 border-yellow-400">
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+          <Star className="w-6 h-6" />
+          CHEAT SHEET - Your Quick Reference
+        </h2>
+
+        <div className="space-y-6">
+          {/* About This App */}
+          <div className="bg-white/10 rounded-lg p-4">
+            <h3 className="font-bold text-lg mb-2">Built This Study App (MENTION THIS!)</h3>
+            <p className="text-sm mb-2">
+              "I built a comprehensive interview prep platform to prepare for this internship using:"
+            </p>
+            <ul className="text-sm space-y-1 ml-4">
+              <li>• React + TypeScript + Tailwind CSS (frontend)</li>
+              <li>• Supabase (PostgreSQL database with 168 terms, 626 quiz questions)</li>
+              <li>• Gemini AI API integration for adaptive learning</li>
+              <li>• 11 interactive coding labs (FizzBuzz, Two Sum, Binary Search, etc.)</li>
+              <li>• Priority-based learning system (99% priority terms first)</li>
+            </ul>
+            <p className="text-sm mt-2 italic">
+              This shows self-motivation, full-stack skills, and genuine interest in the role!
+            </p>
+          </div>
+
+          {/* When You Get Lost or Anxious */}
+          <div className="bg-white/10 rounded-lg p-4">
+            <h3 className="font-bold text-lg mb-2">When Your Mind Blocks or You Get Lost:</h3>
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="font-semibold">1. Buy Time (Use These Phrases):</p>
+                <ul className="ml-4 space-y-1">
+                  <li>• "That's an interesting question. Let me think about this for a moment..."</li>
+                  <li>• "Can I clarify the requirements before I answer?"</li>
+                  <li>• "Let me break this down step by step..."</li>
+                  <li>• "I want to make sure I understand correctly - you're asking about [restate question]?"</li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-semibold">2. Reset Your Thinking:</p>
+                <ul className="ml-4 space-y-1">
+                  <li>• Take a deep breath (literally - 3 seconds)</li>
+                  <li>• Ask for the question to be repeated: "Could you rephrase that?"</li>
+                  <li>• Start with what you DO know: "I know that [basic concept]..."</li>
+                  <li>• Think out loud: "My thought process is..."</li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-semibold">3. When You Don't Know Something:</p>
+                <ul className="ml-4 space-y-1">
+                  <li>• BE HONEST: "I haven't worked with [X] yet, but here's my understanding..."</li>
+                  <li>• Show learning ability: "I would start by checking the official documentation..."</li>
+                  <li>• Connect to what you know: "It's similar to [related concept], right?"</li>
+                  <li>• Express enthusiasm: "That sounds fascinating. I'd love to learn it during the internship."</li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-semibold">4. Anxiety Management Techniques:</p>
+                <ul className="ml-4 space-y-1">
+                  <li>• Remember: They WANT you to succeed. They're not trying to trick you.</li>
+                  <li>• It's an internship, not a senior role. They expect gaps in knowledge.</li>
+                  <li>• Pause and breathe. Silence is okay - it shows you're thinking.</li>
+                  <li>• Drink water to reset (keep a glass nearby)</li>
+                  <li>• If stuck on coding: Start with pseudocode or describe the approach verbally</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Key Technical Points to Mention */}
+          <div className="bg-white/10 rounded-lg p-4">
+            <h3 className="font-bold text-lg mb-2">Key Technical Points (High Impact):</h3>
+            <div className="grid md:grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="font-semibold">OOP:</p>
+                <p>"I choose override for polymorphism; new is just hiding."</p>
+              </div>
+              <div>
+                <p className="font-semibold">HTTP:</p>
+                <p>"PUT is idempotent; POST creates new resources each time."</p>
+              </div>
+              <div>
+                <p className="font-semibold">Status Codes:</p>
+                <p>"I use 422 for validation, 409 for conflicts, not 400 for everything."</p>
+              </div>
+              <div>
+                <p className="font-semibold">EF Core:</p>
+                <p>"I use AsNoTracking for read-only queries to improve performance."</p>
+              </div>
+              <div>
+                <p className="font-semibold">Testing:</p>
+                <p>"I write tests using AAA pattern and mock dependencies through interfaces."</p>
+              </div>
+              <div>
+                <p className="font-semibold">SQL:</p>
+                <p>"INNER JOIN for intersection; LEFT JOIN when I need all left rows even without matches."</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Confidence Boosters */}
+          <div className="bg-white/10 rounded-lg p-4">
+            <h3 className="font-bold text-lg mb-2">Remember These (Confidence Boosters):</h3>
+            <ul className="text-sm space-y-2">
+              <li>✅ You have 6+ months experience at Stefanini and Valahia Apex</li>
+              <li>✅ You've built multiple full-stack projects (Movie DB, School Management)</li>
+              <li>✅ You already know Scrum from Stefanini daily standups</li>
+              <li>✅ You're studying AI/ML at Georgia Tech - shows advanced learning</li>
+              <li>✅ You built THIS study app - proof of initiative and full-stack skills</li>
+              <li>✅ You know Angular, .NET, React, SQL, C#, TypeScript - exactly what they need</li>
+            </ul>
+          </div>
+
+          {/* Emergency Responses */}
+          <div className="bg-white/10 rounded-lg p-4">
+            <h3 className="font-bold text-lg mb-2">Emergency Phrases When Completely Stuck:</h3>
+            <div className="space-y-2 text-sm">
+              <p><strong>Technical Question:</strong> "I'm not familiar with that specific implementation, but my approach would be to check the official documentation first, then try a small proof-of-concept to understand it better."</p>
+              <p><strong>Coding Problem:</strong> "Let me start by clarifying the requirements and edge cases. Then I'll describe my approach before coding."</p>
+              <p><strong>System Design:</strong> "I'd break this into components: frontend (React/Angular), backend API (.NET), database (SQL), and then discuss how they communicate via REST."</p>
+              <p><strong>Behavioral:</strong> "At Stefanini, we had a similar situation where... [use STAR method: Situation, Task, Action, Result]"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* General Interview Strategy */}
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
         <div className="flex items-center gap-2 mb-4">
