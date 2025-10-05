@@ -122,10 +122,10 @@ export function Sidebar({
           <div className="space-y-2">
             {categories.map((category) => {
               // Sort terms by priority first, then order_index
-              const priorityOrder = { '99%': 1, 'likely': 2, 'medium': 3, 'low': 4 };
+              const priorityOrder = { '99%': 1, 'high': 2, 'likely': 3, 'medium': 4, 'low': 5 };
               const categoryTerms = (termsByCategory[category.id] || []).sort((a, b) => {
-                const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] || 3;
-                const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] || 3;
+                const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] || 4;
+                const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] || 4;
                 if (aPriority !== bPriority) return aPriority - bPriority;
                 return a.order_index - b.order_index;
               });
@@ -175,8 +175,14 @@ export function Sidebar({
                           {term.priority === '99%' && (
                             <span className="text-xs px-1.5 py-0.5 rounded bg-red-600 text-white font-bold shrink-0">99%</span>
                           )}
+                          {term.priority === 'high' && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-red-500 text-white font-bold shrink-0">High</span>
+                          )}
                           {term.priority === 'likely' && (
-                            <span className="text-xs px-1.5 py-0.5 rounded bg-orange-600 text-white shrink-0">Likely</span>
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-orange-500 text-white shrink-0">Likely</span>
+                          )}
+                          {term.priority === 'medium' && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-yellow-600 text-white shrink-0">Medium</span>
                           )}
                           {term.priority === 'low' && (
                             <span className="text-xs px-1.5 py-0.5 rounded bg-gray-600 text-white shrink-0">Low</span>

@@ -14,10 +14,43 @@ export function TermDetail({ term, quizQuestions }: TermDetailProps) {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-8 text-white">
-        <h1 className="text-4xl font-bold mb-2">{term.term}</h1>
-        <p className="text-cyan-100 text-sm">
-          Study this concept thoroughly for your interview
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold mb-2">{term.term}</h1>
+            <p className="text-cyan-100 text-sm">
+              Study this concept thoroughly for your interview
+            </p>
+          </div>
+          {term.priority && (
+            <div className="shrink-0">
+              {term.priority === '99%' && (
+                <span className="inline-block px-4 py-2 rounded-lg bg-red-600 text-white font-bold text-lg">
+                  99% Chance
+                </span>
+              )}
+              {term.priority === 'high' && (
+                <span className="inline-block px-4 py-2 rounded-lg bg-red-500 text-white font-bold text-lg">
+                  High Priority
+                </span>
+              )}
+              {term.priority === 'likely' && (
+                <span className="inline-block px-4 py-2 rounded-lg bg-orange-500 text-white font-semibold text-lg">
+                  Likely Asked
+                </span>
+              )}
+              {term.priority === 'medium' && (
+                <span className="inline-block px-4 py-2 rounded-lg bg-yellow-600 text-white font-semibold text-lg">
+                  Medium Priority
+                </span>
+              )}
+              {term.priority === 'low' && (
+                <span className="inline-block px-4 py-2 rounded-lg bg-gray-600 text-white font-semibold text-lg">
+                  Low Priority
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ELI5 */}
