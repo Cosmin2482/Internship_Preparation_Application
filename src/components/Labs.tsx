@@ -6,18 +6,26 @@ import { CodeKata } from './labs/CodeKata';
 import { OOPConstructor } from './labs/OOPConstructor';
 import { ArrayReversal } from './labs/ArrayReversal';
 import { PalindromeChecker } from './labs/PalindromeChecker';
-import { Beaker, Grid3x3, Database, Terminal, Box, Code2, CheckCircle } from 'lucide-react';
+import { FizzBuzz } from './labs/FizzBuzz';
+import { TwoSum } from './labs/TwoSum';
+import { ReverseString } from './labs/ReverseString';
+import { FindMaxMin } from './labs/FindMaxMin';
+import { Beaker, Grid3x3, Database, Terminal, Box, Code2, CheckCircle, Zap, Hash, RotateCcw, TrendingUp } from 'lucide-react';
 
 export function Labs() {
-  const [activeLab, setActiveLab] = useState<string>('oop-constructor');
+  const [activeLab, setActiveLab] = useState<string>('fizzbuzz');
 
   const labs = [
-    { id: 'oop-constructor', name: 'OOP: Constructor & Properties', icon: Box, component: OOPConstructor },
-    { id: 'array-reversal', name: 'Array Reversal (Two Pointers)', icon: Code2, component: ArrayReversal },
+    { id: 'fizzbuzz', name: 'FizzBuzz (Classic Warmup)', icon: Zap, component: FizzBuzz },
+    { id: 'two-sum', name: 'Two Sum (Hash Map)', icon: Hash, component: TwoSum },
+    { id: 'reverse-string', name: 'Reverse String In-Place', icon: RotateCcw, component: ReverseString },
+    { id: 'find-max-min', name: 'Find Max & Min', icon: TrendingUp, component: FindMaxMin },
     { id: 'palindrome', name: 'Palindrome Checker', icon: CheckCircle, component: PalindromeChecker },
+    { id: 'array-reversal', name: 'Array Reversal (Two Pointers)', icon: Code2, component: ArrayReversal },
+    { id: 'oop-constructor', name: 'OOP: Constructor & Properties', icon: Box, component: OOPConstructor },
     { id: 'kata', name: 'Code Kata', icon: Terminal, component: CodeKata },
     { id: 'sql', name: 'SQL Practice', icon: Database, component: SQLPractice },
-    { id: 'threshold', name: 'Threshold & Metrics Explorer', icon: Grid3x3, component: ThresholdExplorer },
+    { id: 'threshold', name: 'Threshold & Metrics', icon: Grid3x3, component: ThresholdExplorer },
     { id: 'knn', name: 'kNN Playground', icon: Grid3x3, component: KNNPlayground },
   ];
 
