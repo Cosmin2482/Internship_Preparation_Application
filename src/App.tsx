@@ -12,7 +12,8 @@ import { InterviewTips } from './components/InterviewTips';
 import { QuizPractice } from './components/QuizPractice';
 import { BibliaGiga } from './components/BibliaGiga';
 import { ApiKeyWarning } from './components/ApiKeyWarning';
-import { Loader, Download, FileText } from 'lucide-react';
+import { UserGuide } from './components/UserGuide';
+import { Loader, Download, FileText, HelpCircle } from 'lucide-react';
 
 type View = 'term' | 'labs' | 'hr' | 'ai-tools' | 'tips' | 'quiz' | 'biblia-giga';
 
@@ -24,6 +25,7 @@ function App() {
   const [view, setView] = useState<View>('term');
   const [loading, setLoading] = useState(true);
   const [showPomodoro, setShowPomodoro] = useState(false);
+  const [showUserGuide, setShowUserGuide] = useState(false);
 
   const selectedTerm = terms.find(t => t.id === selectedTermId) || null;
   const selectedTermQuestions = quizQuestions.filter(q => q.term_id === selectedTermId);
@@ -167,6 +169,13 @@ ${selectedTerm.diagram}
                 <FileText size={18} />
                 {showPomodoro ? 'Hide' : 'Show'} Pomodoro
               </button>
+              <button
+                onClick={() => setShowUserGuide(true)}
+                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg transition-colors border border-cyan-500"
+              >
+                <HelpCircle size={18} />
+                User Guide
+              </button>
             </div>
 
             {terms.length === 0 && (
@@ -213,6 +222,8 @@ ${selectedTerm.diagram}
       </main>
 
       <AITutor currentTerm={selectedTerm} />
+
+      {showUserGuide && <UserGuide onClose={() => setShowUserGuide(false)} />}
     </div>
   );
 }
