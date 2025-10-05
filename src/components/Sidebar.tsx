@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Sparkles, Star } from 'lucide-react';
+import { Menu, X, BookOpen, Sparkles, Star, Brain } from 'lucide-react';
 import { Category, Term } from '../types';
 
 interface SidebarProps {
@@ -11,6 +11,7 @@ interface SidebarProps {
   onHRToolsSelect: () => void;
   onAIToolsSelect: () => void;
   onTipsSelect: () => void;
+  onQuizSelect: () => void;
 }
 
 export function Sidebar({
@@ -21,7 +22,8 @@ export function Sidebar({
   onLabSelect,
   onHRToolsSelect,
   onAIToolsSelect,
-  onTipsSelect
+  onTipsSelect,
+  onQuizSelect
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -72,6 +74,16 @@ export function Sidebar({
               className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 transition-all font-medium"
             >
               💼 HR & STAR Builder
+            </button>
+          </div>
+
+          <div className="mb-6">
+            <button
+              onClick={onQuizSelect}
+              className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all font-medium flex items-center gap-2"
+            >
+              <Brain size={18} />
+              Quiz Practice
             </button>
           </div>
 

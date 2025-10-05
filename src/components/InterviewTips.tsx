@@ -236,8 +236,173 @@ export function InterviewTips() {
         </div>
       </div>
 
-      {/* Day-Before Checklist */}
+      {/* Trimble-Specific Topics */}
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Star className="w-6 h-6 text-cyan-500" />
+          <h2 className="text-2xl font-bold">Trimble-Specific Topics</h2>
+        </div>
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-semibold text-lg mb-2 text-cyan-600 dark:text-cyan-400">1. Scrum/Agile Methodology (99% Priority)</h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <strong>What it is:</strong> Agile framework with 2-week sprints, daily standups, sprint planning, reviews, and retrospectives.
+            </p>
+            <div className="bg-cyan-50 dark:bg-cyan-950 border-l-4 border-cyan-500 p-3 rounded mb-2">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <strong>How to Answer:</strong> "Scrum is an Agile framework using 2-week sprints. Teams plan work using user stories (format: As a [role], I want [goal] so that [benefit]). We have daily 15-minute standups to sync on progress and blockers. Sprint reviews demo working features to stakeholders. Retrospectives help us improve our process. I'm excited to learn this in a real team environment at Trimble."
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg mb-2 text-cyan-600 dark:text-cyan-400">2. CI/CD & Azure DevOps (99% Priority)</h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <strong>What it is:</strong> Automated build, test, and deployment on every commit using Azure DevOps Pipelines.
+            </p>
+            <div className="bg-cyan-50 dark:bg-cyan-950 border-l-4 border-cyan-500 p-3 rounded mb-2">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <strong>How to Answer:</strong> "CI/CD automates testing and deployment. When I push code to Git, a pipeline automatically builds the project, runs tests, and if everything passes, deploys to Azure App Service. This catches bugs early and allows safe, frequent releases. I'm familiar with the concept and eager to learn Azure DevOps pipelines hands-on."
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg mb-2 text-cyan-600 dark:text-cyan-400">3. Azure Cloud Services (99% Priority)</h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <strong>Trimble uses:</strong> Azure App Service (hosting), Azure SQL Database, Azure Blob Storage (3D models, files), Azure Active Directory.
+            </p>
+            <div className="bg-cyan-50 dark:bg-cyan-950 border-l-4 border-cyan-500 p-3 rounded mb-2">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <strong>How to Answer:</strong> "Cloud computing means renting resources from providers like Microsoft Azure. For a web app, I would use Azure App Service to host it, Azure SQL for the database, and Azure Blob Storage for files like 3D models. Benefits include automatic scaling, 99.9% uptime, and pay-per-use pricing. I'm ready to learn Azure services in depth during the internship."
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg mb-2 text-cyan-600 dark:text-cyan-400">4. Git Workflows (Important)</h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <strong>What Trimble expects:</strong> Feature branching, Pull Requests with code review, clear commit messages, merge conflict resolution.
+            </p>
+            <div className="bg-cyan-50 dark:bg-cyan-950 border-l-4 border-cyan-500 p-3 rounded mb-2">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <strong>How to Answer:</strong> "In a team, I create a feature branch for my work, commit changes with clear messages like 'feat: add 3D viewer component', then push and open a Pull Request. Team members review my code, suggest improvements, and once approved and CI tests pass, we merge to main. This ensures code quality and prevents conflicts."
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg mb-2 text-cyan-600 dark:text-cyan-400">5. BIM & 3D Visualization (Trimble-Specific)</h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
+              <strong>What BIM is:</strong> Building Information Modeling - 3D models of buildings/construction (file formats: .ifc, .dwg, .rvt).
+            </p>
+            <div className="bg-cyan-50 dark:bg-cyan-950 border-l-4 border-cyan-500 p-3 rounded mb-2">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <strong>How to Answer:</strong> "I know BIM stands for Building Information Modeling, used in construction to create 3D models of buildings. I'm excited to learn how software like Trimble's tools help engineers and architects visualize and collaborate on construction projects. The combination of software engineering and construction technology is fascinating."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CV-Based Interview Questions */}
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <BookOpen className="w-6 h-6 text-orange-500" />
+          <h2 className="text-2xl font-bold">Your CV-Based Questions & Answers</h2>
+        </div>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          Based on your experience at Valahia Apex and Stefanini, here are questions you might get:
+        </p>
+        <div className="space-y-4">
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">
+              Q: "Tell me about your experience at Stefanini. What did you work on?"
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <strong>A:</strong> "At Stefanini, I worked as a Software Developer building ServiceNow workflows and UI components. I automated incident handling with inbound email flows, which reduced ticket resolution time. I participated daily in Agile ceremonies - scrum, retrospectives, and sprint planning - which taught me the value of team communication and iterative development. I delivered high-priority features like auto-refresh dashboards and user management. One achievement I'm proud of is identifying and fixing bugs before deployment, saving the team time and resources."
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">
+              Q: "You mention Ansible and automation at Valahia Apex. Can you explain what you did?"
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <strong>A:</strong> "At Valahia Apex, I automated IT workflows using Ansible playbooks, which reduced manual work significantly. I also optimized RouterOS routing and firewall rules, improving network performance by 15%. I designed Python scripts for automation and monitoring tasks, boosting team efficiency. Additionally, I gained hands-on experience in server room design and infrastructure planning, which gave me insight into how software solutions integrate with physical hardware."
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">
+              Q: "Tell me about your Movie Database project. What technologies did you use?"
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <strong>A:</strong> "I built a full-stack Movie Database using Angular for the frontend and .NET for the backend. The platform manages 1,000+ movie records with a dynamic search system and review functionality. I implemented RESTful APIs for CRUD operations, used Entity Framework Core for database access, and designed a responsive UI with Angular. This project taught me end-to-end application development, from database design to user interface, and strengthened my understanding of the MVC architecture pattern."
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">
+              Q: "I see you're completing Georgia Tech's Introduction to Analytics Modeling. What are you learning?"
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <strong>A:</strong> "I'm currently completing a 16-week course on analytics modeling from Georgia Tech, focusing on AI, machine learning, and scalable architectures. I'm learning about classification models, LLMs, and how AI agents collaborate through agentic workflows. I've also been self-studying and building hands-on projects with AI tools. This aligns with Trimble's focus on embracing AI for productivity - I'm comfortable using AI-assisted coding tools like Copilot, Cursor, and ChatGPT to accelerate development while ensuring I understand the underlying code."
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">
+              Q: "You have experience with multiple frameworks - Angular, React, WPF. Which do you prefer and why?"
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <strong>A:</strong> "Each framework has strengths for different use cases. I prefer Angular for large-scale enterprise applications because of its robust structure, TypeScript integration, and dependency injection. React is excellent for rapid prototyping and when you need fine-grained control over rendering. WPF is powerful for Windows desktop applications with rich UI requirements using MVVM pattern. I'm flexible and can adapt to whatever framework the team uses at Trimble - what matters most is writing clean, maintainable code that follows the framework's best practices."
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">
+              Q: "What's your experience with databases? I see you've worked with SQL Server, PostgreSQL, MongoDB."
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <strong>A:</strong> "I have strong database experience across both SQL and NoSQL. For my Movie Database and School Management projects, I used Microsoft SQL Server with Entity Framework Core, designing normalized schemas with proper foreign keys and indexes. I've worked with complex JOIN queries, stored procedures, and query optimization. I've also used PostgreSQL in academic projects and MongoDB for my Dinamo București fan website where document-based storage made sense for flexible content. I understand when to use relational vs document databases based on data structure and query patterns."
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">
+              Q: "Why do you want to intern at Trimble? What interests you about this position?"
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <strong>A:</strong> "I'm excited about Trimble because you're solving real-world problems in construction and engineering through software. The combination of cutting-edge technology like 3D visualization, BIM, and cloud computing with tangible impact on building better infrastructure is fascinating. The rotational program structure is perfect for me - working with Angular, .NET, and learning from senior engineers aligns with my goal of becoming a strong full-stack developer. I'm also drawn to Trimble's embrace of AI and modern development practices. As a self-motivated learner who's already built multiple full-stack projects, I'm ready to contribute and grow within a collaborative team environment."
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* What You've Already Mastered */}
       <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-6">
+        <h2 className="text-2xl font-bold mb-4">What You've Already Mastered</h2>
+        <p className="mb-4">Your study app already covers 90% of what Trimble needs:</p>
+        <div className="grid md:grid-cols-2 gap-3 text-sm">
+          <div>✅ C# & C++ fundamentals</div>
+          <div>✅ SQL (joins, queries, database design)</div>
+          <div>✅ TypeScript</div>
+          <div>✅ React & Angular</div>
+          <div>✅ OOP (Encapsulation, Inheritance, Polymorphism, Abstraction)</div>
+          <div>✅ Testing (Unit tests, AAA pattern, Mocks)</div>
+          <div>✅ .NET Core (DbContext, EF Core, Middleware)</div>
+          <div>✅ HTTP/REST APIs</div>
+          <div>✅ Architecture patterns (MVC, Repository, Service layers)</div>
+          <div>✅ Algorithms & Data Structures</div>
+          <div>✅ Git basics</div>
+          <div>✅ 11 coding labs for practice</div>
+        </div>
+        <p className="mt-4 font-semibold">The missing 10% (Scrum, Azure, CI/CD) are things they EXPECT to teach you!</p>
+      </div>
+
+      {/* Day-Before Checklist */}
+      <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl p-6">
         <h2 className="text-2xl font-bold mb-4">Day-Before-Interview Checklist</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
