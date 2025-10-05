@@ -3,16 +3,22 @@ import { ThresholdExplorer } from './labs/ThresholdExplorer';
 import { KNNPlayground } from './labs/KNNPlayground';
 import { SQLPractice } from './labs/SQLPractice';
 import { CodeKata } from './labs/CodeKata';
-import { Beaker, Grid3x3, Database, Terminal } from 'lucide-react';
+import { OOPConstructor } from './labs/OOPConstructor';
+import { ArrayReversal } from './labs/ArrayReversal';
+import { PalindromeChecker } from './labs/PalindromeChecker';
+import { Beaker, Grid3x3, Database, Terminal, Box, Code2, CheckCircle } from 'lucide-react';
 
 export function Labs() {
-  const [activeLab, setActiveLab] = useState<string>('threshold');
+  const [activeLab, setActiveLab] = useState<string>('oop-constructor');
 
   const labs = [
+    { id: 'oop-constructor', name: 'OOP: Constructor & Properties', icon: Box, component: OOPConstructor },
+    { id: 'array-reversal', name: 'Array Reversal (Two Pointers)', icon: Code2, component: ArrayReversal },
+    { id: 'palindrome', name: 'Palindrome Checker', icon: CheckCircle, component: PalindromeChecker },
+    { id: 'kata', name: 'Code Kata', icon: Terminal, component: CodeKata },
+    { id: 'sql', name: 'SQL Practice', icon: Database, component: SQLPractice },
     { id: 'threshold', name: 'Threshold & Metrics Explorer', icon: Grid3x3, component: ThresholdExplorer },
     { id: 'knn', name: 'kNN Playground', icon: Grid3x3, component: KNNPlayground },
-    { id: 'sql', name: 'SQL Practice', icon: Database, component: SQLPractice },
-    { id: 'kata', name: 'Code Kata', icon: Terminal, component: CodeKata },
   ];
 
   const ActiveComponent = labs.find(lab => lab.id === activeLab)?.component;
