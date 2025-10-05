@@ -7,9 +7,11 @@ import { Labs } from './components/Labs';
 import { HRTools } from './components/HRTools';
 import { AITutor } from './components/AITutor';
 import { PomodoroTimer } from './components/PomodoroTimer';
+import { AIFeatures } from './components/AIFeatures';
+import { InterviewTips } from './components/InterviewTips';
 import { Loader, Download, FileText } from 'lucide-react';
 
-type View = 'term' | 'labs' | 'hr';
+type View = 'term' | 'labs' | 'hr' | 'ai-tools' | 'tips';
 
 function App() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -135,6 +137,8 @@ ${selectedTerm.diagram}
         onTermSelect={handleTermSelect}
         onLabSelect={() => setView('labs')}
         onHRToolsSelect={() => setView('hr')}
+        onAIToolsSelect={() => setView('ai-tools')}
+        onTipsSelect={() => setView('tips')}
       />
 
       <main className="lg:ml-80 min-h-screen">
@@ -179,6 +183,10 @@ ${selectedTerm.diagram}
           {view === 'labs' && <Labs />}
 
           {view === 'hr' && <HRTools />}
+
+          {view === 'ai-tools' && <AIFeatures />}
+
+          {view === 'tips' && <InterviewTips />}
 
           {view === 'term' && !selectedTerm && terms.length === 0 && (
             <div className="max-w-3xl mx-auto bg-gray-800 rounded-xl p-12 text-center border border-gray-700">

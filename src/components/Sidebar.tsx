@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, BookOpen } from 'lucide-react';
+import { useState } from 'react';
+import { Menu, X, BookOpen, Sparkles, Star } from 'lucide-react';
 import { Category, Term } from '../types';
 
 interface SidebarProps {
@@ -9,6 +9,8 @@ interface SidebarProps {
   onTermSelect: (termId: string) => void;
   onLabSelect: () => void;
   onHRToolsSelect: () => void;
+  onAIToolsSelect: () => void;
+  onTipsSelect: () => void;
 }
 
 export function Sidebar({
@@ -17,7 +19,9 @@ export function Sidebar({
   selectedTermId,
   onTermSelect,
   onLabSelect,
-  onHRToolsSelect
+  onHRToolsSelect,
+  onAIToolsSelect,
+  onTipsSelect
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -65,9 +69,29 @@ export function Sidebar({
           <div className="mb-6">
             <button
               onClick={onHRToolsSelect}
-              className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all font-medium"
+              className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 transition-all font-medium"
             >
               💼 HR & STAR Builder
+            </button>
+          </div>
+
+          <div className="mb-6">
+            <button
+              onClick={onAIToolsSelect}
+              className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 transition-all font-medium flex items-center gap-2"
+            >
+              <Sparkles size={18} />
+              AI Study Tools
+            </button>
+          </div>
+
+          <div className="mb-6">
+            <button
+              onClick={onTipsSelect}
+              className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 transition-all font-medium flex items-center gap-2"
+            >
+              <Star size={18} />
+              Interview Tips
             </button>
           </div>
 
