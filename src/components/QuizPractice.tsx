@@ -78,15 +78,19 @@ export function QuizPractice() {
 
     try {
       // Sanitize inputs to prevent JSON issues
-      const sanitize = (text: string) => text.replace(/[\n\r]/g, ' ').trim();
+      const sanitize = (text: string) => text.replace(/[\n\r]/g, ' ').replace(/"/g, "'").trim();
 
-      const prompt = `Evaluate this technical interview answer.
+      const prompt = `You are evaluating a technical interview answer. Be strict but fair.
 
-Question: ${sanitize(currentQ.question)}
-Correct Answer: ${sanitize(correctAnswer)}
-Student Answer: ${sanitize(userAnswer)}
+QUESTION: ${sanitize(currentQ.question)}
+CORRECT ANSWER: ${sanitize(correctAnswer)}
+STUDENT ANSWER: ${sanitize(userAnswer)}
 
-Grade if the student demonstrates correct understanding. They don't need exact wording, but the core concept must be accurate. Respond ONLY with valid JSON.`;
+TASK: Determine if the student demonstrates correct understanding. They don't need exact wording, but the core concept must be accurate.
+
+IMPORTANT: You must respond with EXACTLY this format (no extra text):
+CORRECT: true or false
+FEEDBACK: one clear sentence explaining why`;
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
@@ -97,22 +101,8 @@ Grade if the student demonstrates correct understanding. They don't need exact w
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
               temperature: 0.1,
-              maxOutputTokens: 200,
-              responseMimeType: 'application/json',
-              responseSchema: {
-                type: 'OBJECT',
-                properties: {
-                  isCorrect: {
-                    type: 'BOOLEAN',
-                    description: 'True if student shows correct understanding, false otherwise'
-                  },
-                  feedback: {
-                    type: 'STRING',
-                    description: 'One clear sentence explaining why correct or what is wrong. Keep it concise and avoid special characters.'
-                  }
-                },
-                required: ['isCorrect', 'feedback']
-              }
+              maxOutputTokens: 150,
+              candidateCount: 1
             }
           })
         }
@@ -124,53 +114,85 @@ Grade if the student demonstrates correct understanding. They don't need exact w
       }
 
       const result = await response.json();
+      console.log('Full Gemini response:', JSON.stringify(result, null, 2));
+
+      // Check if response was blocked or filtered
+      if (result.promptFeedback?.blockReason) {
+        throw new Error(`Content blocked: ${result.promptFeedback.blockReason}`);
+      }
+
       const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
       if (!aiText) {
-        throw new Error('No response from AI');
+        console.error('Empty response from AI. Full result:', result);
+
+        // Check for finish reason
+        const finishReason = result.candidates?.[0]?.finishReason;
+        if (finishReason && finishReason !== 'STOP') {
+          throw new Error(`AI stopped unexpectedly: ${finishReason}`);
+        }
+
+        throw new Error('No response from AI - empty text content');
       }
 
-      // Parse the JSON response with robust error handling
-      let evaluation;
+      // Parse the simple text format with robust error handling
+      console.log('Raw AI response:', aiText);
+
+      let evaluation = { isCorrect: false, feedback: '' };
+
       try {
-        evaluation = JSON.parse(aiText);
+        // Try to parse the CORRECT: and FEEDBACK: format
+        const correctMatch = aiText.match(/CORRECT:\s*(true|false)/i);
+        const feedbackMatch = aiText.match(/FEEDBACK:\s*(.+?)(?:\n|$)/i);
 
-        // Validate the parsed object has required fields
-        if (typeof evaluation.isCorrect !== 'boolean') {
-          throw new Error('Invalid response structure: isCorrect is not a boolean');
+        if (correctMatch) {
+          evaluation.isCorrect = correctMatch[1].toLowerCase() === 'true';
+        } else {
+          // Fallback: look for key indicators
+          const textLower = aiText.toLowerCase();
+
+          const hasIncorrectSignals = (
+            textLower.includes('incorrect') ||
+            textLower.includes('not correct') ||
+            textLower.includes('wrong') ||
+            textLower.includes('false')
+          );
+
+          const hasCorrectSignals = (
+            textLower.includes('correct understanding') ||
+            textLower.includes('demonstrates understanding') ||
+            (textLower.includes('true') && !hasIncorrectSignals)
+          );
+
+          evaluation.isCorrect = hasCorrectSignals && !hasIncorrectSignals;
         }
-        if (typeof evaluation.feedback !== 'string') {
-          evaluation.feedback = 'Evaluation completed but feedback format was unexpected.';
+
+        if (feedbackMatch) {
+          evaluation.feedback = feedbackMatch[1].trim();
+        } else {
+          // Use the whole response as feedback if format is unexpected
+          evaluation.feedback = aiText.trim();
         }
+
+        // Ensure feedback is not empty
+        if (!evaluation.feedback) {
+          evaluation.feedback = evaluation.isCorrect
+            ? 'Your answer demonstrates correct understanding.'
+            : 'Your answer does not match the expected concept. Please review the model answer.';
+        }
+
       } catch (parseError) {
-        console.error('JSON parse error:', parseError);
-        console.error('Raw AI response:', aiText);
-
-        // Fallback: Try to extract isCorrect from text
-        const textLower = aiText.toLowerCase();
-        const seemsCorrect = (
-          textLower.includes('"iscorrect": true') ||
-          textLower.includes('"iscorrect":true') ||
-          (textLower.includes('true') && textLower.indexOf('true') < textLower.indexOf('false'))
-        );
-
-        const seemsIncorrect = (
-          textLower.includes('"iscorrect": false') ||
-          textLower.includes('"iscorrect":false') ||
-          textLower.includes('incorrect') ||
-          textLower.includes('not correct') ||
-          textLower.includes('wrong')
-        );
-
+        console.error('Parse error:', parseError);
+        // Ultra-safe fallback
         evaluation = {
-          isCorrect: seemsIncorrect ? false : seemsCorrect,
-          feedback: 'Unable to parse detailed feedback. The AI response format was unexpected. Please check the model answer and explanation below.'
+          isCorrect: false,
+          feedback: 'Unable to evaluate response format. Please check the model answer and explanation below for guidance.'
         };
       }
 
       setFeedback({
         isCorrect: evaluation.isCorrect === true,
-        aiResponse: evaluation.feedback || 'No feedback provided',
+        aiResponse: evaluation.feedback,
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
