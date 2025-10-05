@@ -97,7 +97,7 @@ Act like an interviewer: Give conversational feedback on their answer. Mention w
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
               temperature: 0.3,
-              maxOutputTokens: 300,
+              maxOutputTokens: 500,
               candidateCount: 1
             }
           })
@@ -118,21 +118,26 @@ Act like an interviewer: Give conversational feedback on their answer. Mention w
       }
 
       const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const finishReason = result.candidates?.[0]?.finishReason;
 
+      // Check if we have no text at all
       if (!aiText) {
         console.error('Empty response from AI. Full result:', result);
+        console.error('Finish reason:', finishReason);
 
-        // Check for finish reason
-        const finishReason = result.candidates?.[0]?.finishReason;
-        if (finishReason && finishReason !== 'STOP') {
-          throw new Error(`AI stopped unexpectedly: ${finishReason}`);
+        // Only throw error if we truly have no content
+        if (finishReason === 'SAFETY' || finishReason === 'RECITATION') {
+          throw new Error(`Content blocked: ${finishReason}`);
         }
 
         throw new Error('No response from AI - empty text content');
       }
 
-      // Just use the conversational feedback from AI
+      // If we have text but hit MAX_TOKENS, just use what we got
       console.log('Raw AI response:', aiText);
+      if (finishReason === 'MAX_TOKENS') {
+        console.warn('Response was truncated due to MAX_TOKENS, but using what we received');
+      }
 
       setFeedback({
         isCorrect: null, // No strict correct/incorrect - just conversational feedback

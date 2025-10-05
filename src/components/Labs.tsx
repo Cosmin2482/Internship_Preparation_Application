@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Beaker, Play, Check, X, ChevronRight, Code2, Trophy, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Beaker, Play, Check, X, ChevronRight, Code2, Trophy, AlertCircle, BookOpen } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface TestCase {
   input: string;
@@ -524,16 +525,65 @@ class Rectangle extends Shape {
   },
 ];
 
+interface DatabaseLab {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  config: {
+    language: string;
+    difficulty: string;
+    category: string;
+    code: string;
+    expectedOutput?: string;
+    keyPoints?: string[];
+  };
+}
+
 export function Labs() {
   const [selectedLab, setSelectedLab] = useState<Lab | null>(null);
+  const [selectedDbLab, setSelectedDbLab] = useState<DatabaseLab | null>(null);
   const [code, setCode] = useState('');
   const [testResults, setTestResults] = useState<Array<{ passed: boolean; message: string }>>([]);
   const [showSolution, setShowSolution] = useState(false);
   const [showHints, setShowHints] = useState(false);
+  const [dbLabs, setDbLabs] = useState<DatabaseLab[]>([]);
+  const [loadingDbLabs, setLoadingDbLabs] = useState(true);
+
+  useEffect(() => {
+    fetchDatabaseLabs();
+  }, []);
+
+  const fetchDatabaseLabs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('labs')
+        .select('*')
+        .eq('type', 'code-example')
+        .order('name');
+
+      if (error) throw error;
+      setDbLabs(data || []);
+    } catch (error) {
+      console.error('Error fetching labs:', error);
+    } finally {
+      setLoadingDbLabs(false);
+    }
+  };
 
   const selectLab = (lab: Lab) => {
     setSelectedLab(lab);
+    setSelectedDbLab(null);
     setCode(lab.starterCode);
+    setTestResults([]);
+    setShowSolution(false);
+    setShowHints(false);
+  };
+
+  const selectDbLab = (lab: DatabaseLab) => {
+    setSelectedDbLab(lab);
+    setSelectedLab(null);
+    setCode('');
     setTestResults([]);
     setShowSolution(false);
     setShowHints(false);
@@ -629,7 +679,7 @@ export function Labs() {
 
   const allTestsPassed = testResults.length > 0 && testResults.every(r => r.passed);
 
-  if (!selectedLab) {
+  if (!selectedLab && !selectedDbLab) {
     return (
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-8 text-white">
@@ -637,38 +687,162 @@ export function Labs() {
             <Beaker size={40} />
             <div>
               <h1 className="text-4xl font-bold mb-2">Interactive Coding Labs</h1>
-              <p className="text-cyan-100">Practice algorithms & data structures with instant validation</p>
+              <p className="text-cyan-100">Practice algorithms, OOP, HTTP, Angular, and more with real-world examples</p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {labs.map(lab => (
-            <button
-              key={lab.id}
-              onClick={() => selectLab(lab)}
-              className="bg-gray-800 hover:bg-gray-750 border border-gray-700 rounded-xl p-6 text-left transition-all transform hover:scale-105"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="text-xl font-bold text-white">{lab.title}</h3>
-                <span className={`px-2 py-1 text-xs font-semibold rounded border ${getDifficultyColor(lab.difficulty)}`}>
-                  {lab.difficulty}
-                </span>
-              </div>
-              <p className="text-gray-300 text-sm mb-3">{lab.description}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-cyan-400 bg-cyan-900/30 px-2 py-1 rounded">
-                  {lab.category}
-                </span>
-                <ChevronRight className="text-gray-500" size={20} />
-              </div>
-            </button>
-          ))}
+        {/* Comprehensive Study Labs from Database */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <BookOpen className="text-cyan-400" size={24} />
+            <h2 className="text-2xl font-bold text-white">Comprehensive Study Labs</h2>
+          </div>
+
+          {loadingDbLabs ? (
+            <p className="text-gray-400">Loading labs...</p>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {dbLabs.map(lab => (
+                <button
+                  key={lab.id}
+                  onClick={() => selectDbLab(lab)}
+                  className="bg-gray-800 hover:bg-gray-750 border border-gray-700 rounded-xl p-6 text-left transition-all"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-xl font-bold text-white">{lab.name}</h3>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded border ${getDifficultyColor(lab.config.difficulty)}`}>
+                      {lab.config.difficulty}
+                    </span>
+                  </div>
+                  <p className="text-gray-300 text-sm mb-3 line-clamp-3">{lab.description}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-cyan-400 bg-cyan-900/30 px-2 py-1 rounded">
+                      {lab.config.category}
+                    </span>
+                    <span className="text-xs text-blue-400 bg-blue-900/30 px-2 py-1 rounded">
+                      {lab.config.language}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Interactive Practice Labs */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Code2 className="text-cyan-400" size={24} />
+            <h2 className="text-2xl font-bold text-white">Interactive Practice Labs</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {labs.map(lab => (
+              <button
+                key={lab.id}
+                onClick={() => selectLab(lab)}
+                className="bg-gray-800 hover:bg-gray-750 border border-gray-700 rounded-xl p-6 text-left transition-all transform hover:scale-105"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-xl font-bold text-white">{lab.title}</h3>
+                  <span className={`px-2 py-1 text-xs font-semibold rounded border ${getDifficultyColor(lab.difficulty)}`}>
+                    {lab.difficulty}
+                  </span>
+                </div>
+                <p className="text-gray-300 text-sm mb-3">{lab.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-cyan-400 bg-cyan-900/30 px-2 py-1 rounded">
+                    {lab.category}
+                  </span>
+                  <ChevronRight className="text-gray-500" size={20} />
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
+  // Show Database Lab Detail View
+  if (selectedDbLab) {
+    return (
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <button
+            onClick={() => setSelectedDbLab(null)}
+            className="text-cyan-400 hover:text-cyan-300 transition-colors mb-4"
+          >
+            ← Back to Labs
+          </button>
+
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-3xl font-bold text-white">{selectedDbLab.name}</h2>
+            <div className="flex items-center gap-2">
+              <span className={`px-3 py-1 text-sm font-semibold rounded border ${getDifficultyColor(selectedDbLab.config.difficulty)}`}>
+                {selectedDbLab.config.difficulty}
+              </span>
+              <span className="px-3 py-1 text-sm font-semibold rounded border text-blue-400 bg-blue-900/30 border-blue-700">
+                {selectedDbLab.config.language}
+              </span>
+            </div>
+          </div>
+
+          <p className="text-gray-300 mb-6 whitespace-pre-wrap">{selectedDbLab.description}</p>
+
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                <Code2 className="text-cyan-400" size={20} />
+                Complete Example Code
+              </h3>
+              <div className="bg-gray-900 rounded-lg p-4 border border-gray-700 overflow-x-auto">
+                <pre className="text-sm text-gray-100 font-mono whitespace-pre">
+                  <code>{selectedDbLab.config.code}</code>
+                </pre>
+              </div>
+            </div>
+
+            {selectedDbLab.config.expectedOutput && (
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                  <Play className="text-green-400" size={20} />
+                  Expected Output
+                </h3>
+                <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                  <pre className="text-sm text-green-400 font-mono whitespace-pre">
+                    <code>{selectedDbLab.config.expectedOutput}</code>
+                  </pre>
+                </div>
+              </div>
+            )}
+
+            {selectedDbLab.config.keyPoints && selectedDbLab.config.keyPoints.length > 0 && (
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                  <AlertCircle className="text-yellow-400" size={20} />
+                  Key Points
+                </h3>
+                <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4">
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    {selectedDbLab.config.keyPoints.map((point, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-yellow-400 shrink-0">•</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show Interactive Lab Detail View
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
@@ -681,8 +855,8 @@ export function Labs() {
               ← Back to Labs
             </button>
           </div>
-          <span className={`px-3 py-1 text-sm font-semibold rounded border ${getDifficultyColor(selectedLab.difficulty)}`}>
-            {selectedLab.difficulty}
+          <span className={`px-3 py-1 text-sm font-semibold rounded border ${getDifficultyColor(selectedLab!.difficulty)}`}>
+            {selectedLab!.difficulty}
           </span>
         </div>
 
