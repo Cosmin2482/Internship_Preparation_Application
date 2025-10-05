@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Term } from '../types';
-import { Send, Sparkles, Minimize2 } from 'lucide-react';
+import { Send, Sparkles, Minimize2, Brain, Code, Lightbulb, ListChecks, Zap } from 'lucide-react';
 
 interface AITutorProps {
   currentTerm: Term | null;
@@ -19,6 +19,7 @@ export function AITutor({ currentTerm }: AITutorProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -83,12 +84,17 @@ Your role:
 Keep responses concise but thorough. Use analogies when helpful. Be conversational and friendly.`;
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || !currentTerm || isLoading) return;
+  const handleSend = async (customPrompt?: string) => {
+    const messageContent = customPrompt || input.trim();
+    if (!messageContent || !currentTerm || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: input };
+    if (showQuickActions && messages.length > 1) {
+      setShowQuickActions(false);
+    }
+
+    const userMessage: Message = { role: 'user', content: messageContent };
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    if (!customPrompt) setInput('');
     setIsLoading(true);
 
     try {
@@ -102,7 +108,7 @@ Keep responses concise but thorough. Use analogies when helpful. Be conversation
 Previous conversation:
 ${conversationContext}
 
-Student's question: ${input.trim()}
+Student's question: ${messageContent}
 
 Provide a helpful, clear response:`;
 
@@ -174,6 +180,49 @@ Provide a helpful, clear response:`;
         <div className="px-4 py-2 border-b border-gray-700 bg-gray-800">
           <p className="text-xs text-gray-400">Studying:</p>
           <p className="text-sm font-semibold text-white">{currentTerm.term}</p>
+        </div>
+      )}
+
+      {showQuickActions && messages.length === 1 && (
+        <div className="p-4 space-y-2 border-b border-gray-700 bg-gray-800/50">
+          <p className="text-xs text-gray-400 font-medium mb-2">Quick Actions:</p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => handleSend(`Generate a quick 5-question quiz to test my understanding of ${currentTerm.term}. Include multiple choice and true/false questions.`)}
+              className="flex items-center gap-2 p-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-xs text-gray-200 transition-colors"
+            >
+              <ListChecks size={14} className="text-cyan-400" />
+              <span>Quiz Me</span>
+            </button>
+            <button
+              onClick={() => handleSend(`Help me understand ${currentTerm.term} more deeply. Explain advanced aspects, edge cases, and how it's used in real production systems.`)}
+              className="flex items-center gap-2 p-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-xs text-gray-200 transition-colors"
+            >
+              <Brain size={14} className="text-blue-400" />
+              <span>Deepen</span>
+            </button>
+            <button
+              onClick={() => handleSend(`Show me a practical code example of ${currentTerm.term} and explain it line by line. Point out best practices and common mistakes.`)}
+              className="flex items-center gap-2 p-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-xs text-gray-200 transition-colors"
+            >
+              <Code size={14} className="text-green-400" />
+              <span>Code Review</span>
+            </button>
+            <button
+              onClick={() => handleSend(`Break down ${currentTerm.term} into its fundamental components. Explain each part step-by-step as if teaching a beginner.`)}
+              className="flex items-center gap-2 p-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-xs text-gray-200 transition-colors"
+            >
+              <Zap size={14} className="text-yellow-400" />
+              <span>Deconstruct</span>
+            </button>
+            <button
+              onClick={() => handleSend(`Create a simple, memorable analogy to help me understand ${currentTerm.term}. Use real-world examples that make it intuitive.`)}
+              className="flex items-center gap-2 p-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-xs text-gray-200 transition-colors col-span-2"
+            >
+              <Lightbulb size={14} className="text-orange-400" />
+              <span>Analogy Explainer</span>
+            </button>
+          </div>
         </div>
       )}
 

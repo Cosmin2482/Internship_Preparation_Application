@@ -10,7 +10,11 @@ import { FizzBuzz } from './labs/FizzBuzz';
 import { TwoSum } from './labs/TwoSum';
 import { ReverseString } from './labs/ReverseString';
 import { FindMaxMin } from './labs/FindMaxMin';
-import { Beaker, Grid3x3, Database, Terminal, Box, Code2, CheckCircle, Zap, Hash, RotateCcw, TrendingUp } from 'lucide-react';
+import { MergeSortedArrays } from './labs/MergeSortedArrays';
+import { ValidParentheses } from './labs/ValidParentheses';
+import { BinarySearch } from './labs/BinarySearch';
+import { LinkedListBasics } from './labs/LinkedListBasics';
+import { Beaker, Grid3x3, Database, Terminal, Box, Code2, CheckCircle, Zap, Hash, RotateCcw, TrendingUp, GitMerge, Brackets, Search, Link } from 'lucide-react';
 
 export function Labs() {
   const [activeLab, setActiveLab] = useState<string>('fizzbuzz');
@@ -18,10 +22,14 @@ export function Labs() {
   const labs = [
     { id: 'fizzbuzz', name: 'FizzBuzz (Classic Warmup)', icon: Zap, component: FizzBuzz },
     { id: 'two-sum', name: 'Two Sum (Hash Map)', icon: Hash, component: TwoSum },
+    { id: 'valid-parentheses', name: 'Valid Parentheses (Stack)', icon: Brackets, component: ValidParentheses },
+    { id: 'binary-search', name: 'Binary Search (O(log n))', icon: Search, component: BinarySearch },
+    { id: 'merge-sorted', name: 'Merge Sorted Arrays', icon: GitMerge, component: MergeSortedArrays },
     { id: 'reverse-string', name: 'Reverse String In-Place', icon: RotateCcw, component: ReverseString },
     { id: 'find-max-min', name: 'Find Max & Min', icon: TrendingUp, component: FindMaxMin },
     { id: 'palindrome', name: 'Palindrome Checker', icon: CheckCircle, component: PalindromeChecker },
     { id: 'array-reversal', name: 'Array Reversal (Two Pointers)', icon: Code2, component: ArrayReversal },
+    { id: 'linked-list', name: 'Linked List Basics', icon: Link, component: LinkedListBasics },
     { id: 'oop-constructor', name: 'OOP: Constructor & Properties', icon: Box, component: OOPConstructor },
     { id: 'kata', name: 'Code Kata', icon: Terminal, component: CodeKata },
     { id: 'sql', name: 'SQL Practice', icon: Database, component: SQLPractice },
