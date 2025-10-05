@@ -11,7 +11,7 @@ interface QuizQuestion {
 }
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_MODEL = 'gemini-1.5-flash-latest';
 
 export function QuizPractice() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -90,7 +90,7 @@ Provide:
 2. feedback: Brief explanation of why their answer is correct or what's missing (2-3 sentences)`;
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
