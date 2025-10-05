@@ -77,11 +77,16 @@ export function QuizPractice() {
     const correctAnswer = currentQ.choices[currentQ.correct_index];
 
     try {
-      const prompt = `Evaluate this technical interview answer. Question: ${currentQ.question}
-Correct Answer: ${correctAnswer}
-Student's Answer: ${userAnswer}
+      // Sanitize inputs to prevent JSON issues
+      const sanitize = (text: string) => text.replace(/[\n\r]/g, ' ').trim();
 
-Grade the student's understanding. They don't need exact wording, but the core concept must be accurate.`;
+      const prompt = `Evaluate this technical interview answer.
+
+Question: ${sanitize(currentQ.question)}
+Correct Answer: ${sanitize(correctAnswer)}
+Student Answer: ${sanitize(userAnswer)}
+
+Grade if the student demonstrates correct understanding. They don't need exact wording, but the core concept must be accurate. Respond ONLY with valid JSON.`;
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
@@ -91,21 +96,22 @@ Grade the student's understanding. They don't need exact wording, but the core c
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
-              temperature: 0.2,
-              maxOutputTokens: 300,
+              temperature: 0.1,
+              maxOutputTokens: 200,
               responseMimeType: 'application/json',
               responseSchema: {
                 type: 'OBJECT',
                 properties: {
                   isCorrect: {
                     type: 'BOOLEAN',
-                    description: 'True if the student demonstrates correct understanding of the concept, false otherwise'
+                    description: 'True if student shows correct understanding, false otherwise'
                   },
                   feedback: {
                     type: 'STRING',
-                    description: 'Brief explanation (2-3 sentences) of why the answer is correct or what is missing/wrong'
+                    description: 'One clear sentence explaining why correct or what is wrong. Keep it concise and avoid special characters.'
                   }
-                }
+                },
+                required: ['isCorrect', 'feedback']
               }
             }
           })
@@ -124,12 +130,47 @@ Grade the student's understanding. They don't need exact wording, but the core c
         throw new Error('No response from AI');
       }
 
-      // Parse the JSON response
-      const evaluation = JSON.parse(aiText);
+      // Parse the JSON response with robust error handling
+      let evaluation;
+      try {
+        evaluation = JSON.parse(aiText);
+
+        // Validate the parsed object has required fields
+        if (typeof evaluation.isCorrect !== 'boolean') {
+          throw new Error('Invalid response structure: isCorrect is not a boolean');
+        }
+        if (typeof evaluation.feedback !== 'string') {
+          evaluation.feedback = 'Evaluation completed but feedback format was unexpected.';
+        }
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError);
+        console.error('Raw AI response:', aiText);
+
+        // Fallback: Try to extract isCorrect from text
+        const textLower = aiText.toLowerCase();
+        const seemsCorrect = (
+          textLower.includes('"iscorrect": true') ||
+          textLower.includes('"iscorrect":true') ||
+          (textLower.includes('true') && textLower.indexOf('true') < textLower.indexOf('false'))
+        );
+
+        const seemsIncorrect = (
+          textLower.includes('"iscorrect": false') ||
+          textLower.includes('"iscorrect":false') ||
+          textLower.includes('incorrect') ||
+          textLower.includes('not correct') ||
+          textLower.includes('wrong')
+        );
+
+        evaluation = {
+          isCorrect: seemsIncorrect ? false : seemsCorrect,
+          feedback: 'Unable to parse detailed feedback. The AI response format was unexpected. Please check the model answer and explanation below.'
+        };
+      }
 
       setFeedback({
         isCorrect: evaluation.isCorrect === true,
-        aiResponse: evaluation.feedback,
+        aiResponse: evaluation.feedback || 'No feedback provided',
         modelAnswer: correctAnswer,
         explanation: currentQ.explanation
       });
