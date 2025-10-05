@@ -48,8 +48,7 @@ export function QuizPractice() {
           correct_index,
           explanation,
           term:terms(term)
-        `)
-        .limit(50);
+        `);
 
       if (error) throw error;
 
