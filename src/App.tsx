@@ -10,9 +10,10 @@ import { PomodoroTimer } from './components/PomodoroTimer';
 import { AIFeatures } from './components/AIFeatures';
 import { InterviewTips } from './components/InterviewTips';
 import { QuizPractice } from './components/QuizPractice';
+import { BibliaGiga } from './components/BibliaGiga';
 import { Loader, Download, FileText } from 'lucide-react';
 
-type View = 'term' | 'labs' | 'hr' | 'ai-tools' | 'tips' | 'quiz';
+type View = 'term' | 'labs' | 'hr' | 'ai-tools' | 'tips' | 'quiz' | 'biblia-giga';
 
 function App() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -141,6 +142,7 @@ ${selectedTerm.diagram}
         onAIToolsSelect={() => setView('ai-tools')}
         onTipsSelect={() => setView('tips')}
         onQuizSelect={() => setView('quiz')}
+        onBibliaGigaSelect={() => setView('biblia-giga')}
       />
 
       <main className="lg:ml-80 min-h-screen">
@@ -191,6 +193,8 @@ ${selectedTerm.diagram}
           {view === 'tips' && <InterviewTips />}
 
           {view === 'quiz' && <QuizPractice />}
+
+          {view === 'biblia-giga' && <BibliaGiga />}
 
           {view === 'term' && !selectedTerm && terms.length === 0 && (
             <div className="max-w-3xl mx-auto bg-gray-800 rounded-xl p-12 text-center border border-gray-700">

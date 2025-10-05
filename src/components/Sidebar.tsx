@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Sparkles, Star, Brain } from 'lucide-react';
+import { Menu, X, BookOpen, Sparkles, Star, Brain, BookMarked } from 'lucide-react';
 import { Category, Term } from '../types';
 
 interface SidebarProps {
@@ -12,6 +12,7 @@ interface SidebarProps {
   onAIToolsSelect: () => void;
   onTipsSelect: () => void;
   onQuizSelect: () => void;
+  onBibliaGigaSelect: () => void;
 }
 
 export function Sidebar({
@@ -23,7 +24,8 @@ export function Sidebar({
   onHRToolsSelect,
   onAIToolsSelect,
   onTipsSelect,
-  onQuizSelect
+  onQuizSelect,
+  onBibliaGigaSelect
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -59,6 +61,16 @@ export function Sidebar({
         </div>
 
         <nav className="p-4">
+          <div className="mb-6">
+            <button
+              onClick={onBibliaGigaSelect}
+              className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 transition-all font-medium flex items-center gap-2 border-2 border-yellow-400 shadow-lg"
+            >
+              <BookMarked size={20} />
+              <span className="font-bold">BIBLIA GIGA</span>
+            </button>
+          </div>
+
           <div className="mb-6">
             <button
               onClick={onLabSelect}
