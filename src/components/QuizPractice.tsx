@@ -77,16 +77,21 @@ export function QuizPractice() {
     const correctAnswer = currentQ.choices[currentQ.correct_index];
 
     try {
-      // Sanitize inputs to prevent JSON issues
-      const sanitize = (text: string) => text.replace(/[\n\r]/g, ' ').replace(/"/g, "'").trim();
+      // Sanitize and truncate to prevent token overflow
+      const sanitize = (text: string) => {
+        return text
+          .replace(/[\n\r]/g, ' ')
+          .replace(/"/g, "'")
+          .trim()
+          .substring(0, 200); // Limit to 200 chars each
+      };
 
-      const prompt = `You are a friendly technical interviewer helping a candidate prepare. You're evaluating this answer:
+      const prompt = `Interview feedback:
+Q: ${sanitize(currentQ.question)}
+Expected: ${sanitize(correctAnswer)}
+Student: ${sanitize(userAnswer)}
 
-QUESTION: ${sanitize(currentQ.question)}
-EXPECTED ANSWER: ${sanitize(correctAnswer)}
-CANDIDATE'S ANSWER: ${sanitize(userAnswer)}
-
-Act like an interviewer: Give conversational feedback on their answer. Mention what they got right, what's missing or incorrect, and what the complete answer should include. Be encouraging but honest. Keep it to 3-4 sentences max.`;
+Give brief, encouraging feedback (2-3 sentences): what's right, what's missing, what to add.`;
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
@@ -97,7 +102,7 @@ Act like an interviewer: Give conversational feedback on their answer. Mention w
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
               temperature: 0.3,
-              maxOutputTokens: 500,
+              maxOutputTokens: 200,
               candidateCount: 1
             }
           })
