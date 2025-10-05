@@ -1,44 +1,6 @@
-import { useState } from 'react';
-import { ThresholdExplorer } from './labs/ThresholdExplorer';
-import { KNNPlayground } from './labs/KNNPlayground';
-import { SQLPractice } from './labs/SQLPractice';
-import { CodeKata } from './labs/CodeKata';
-import { OOPConstructor } from './labs/OOPConstructor';
-import { ArrayReversal } from './labs/ArrayReversal';
-import { PalindromeChecker } from './labs/PalindromeChecker';
-import { FizzBuzz } from './labs/FizzBuzz';
-import { TwoSum } from './labs/TwoSum';
-import { ReverseString } from './labs/ReverseString';
-import { FindMaxMin } from './labs/FindMaxMin';
-import { MergeSortedArrays } from './labs/MergeSortedArrays';
-import { ValidParentheses } from './labs/ValidParentheses';
-import { BinarySearch } from './labs/BinarySearch';
-import { LinkedListBasics } from './labs/LinkedListBasics';
-import { Beaker, Grid3x3, Database, Terminal, Box, Code2, CheckCircle, Zap, Hash, RotateCcw, TrendingUp, GitMerge, Brackets, Search, Link } from 'lucide-react';
+import { Beaker, Code2 } from 'lucide-react';
 
 export function Labs() {
-  const [activeLab, setActiveLab] = useState<string>('fizzbuzz');
-
-  const labs = [
-    { id: 'fizzbuzz', name: 'FizzBuzz (Classic Warmup)', icon: Zap, component: FizzBuzz },
-    { id: 'two-sum', name: 'Two Sum (Hash Map)', icon: Hash, component: TwoSum },
-    { id: 'valid-parentheses', name: 'Valid Parentheses (Stack)', icon: Brackets, component: ValidParentheses },
-    { id: 'binary-search', name: 'Binary Search (O(log n))', icon: Search, component: BinarySearch },
-    { id: 'merge-sorted', name: 'Merge Sorted Arrays', icon: GitMerge, component: MergeSortedArrays },
-    { id: 'reverse-string', name: 'Reverse String In-Place', icon: RotateCcw, component: ReverseString },
-    { id: 'find-max-min', name: 'Find Max & Min', icon: TrendingUp, component: FindMaxMin },
-    { id: 'palindrome', name: 'Palindrome Checker', icon: CheckCircle, component: PalindromeChecker },
-    { id: 'array-reversal', name: 'Array Reversal (Two Pointers)', icon: Code2, component: ArrayReversal },
-    { id: 'linked-list', name: 'Linked List Basics', icon: Link, component: LinkedListBasics },
-    { id: 'oop-constructor', name: 'OOP: Constructor & Properties', icon: Box, component: OOPConstructor },
-    { id: 'kata', name: 'Code Kata', icon: Terminal, component: CodeKata },
-    { id: 'sql', name: 'SQL Practice', icon: Database, component: SQLPractice },
-    { id: 'threshold', name: 'Threshold & Metrics', icon: Grid3x3, component: ThresholdExplorer },
-    { id: 'knn', name: 'kNN Playground', icon: Grid3x3, component: KNNPlayground },
-  ];
-
-  const ActiveComponent = labs.find(lab => lab.id === activeLab)?.component;
-
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-8 text-white">
@@ -51,28 +13,129 @@ export function Labs() {
         </div>
       </div>
 
-      <div className="flex gap-2 flex-wrap">
-        {labs.map((lab) => {
-          const Icon = lab.icon;
-          return (
-            <button
-              key={lab.id}
-              onClick={() => setActiveLab(lab.id)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeLab === lab.id
-                  ? 'bg-cyan-600 text-white shadow-lg'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
-              }`}
-            >
-              <Icon size={20} />
-              {lab.name}
-            </button>
-          );
-        })}
-      </div>
+      <div className="bg-gray-800 rounded-xl p-8 border border-gray-700">
+        <div className="flex items-center gap-3 mb-6">
+          <Code2 className="text-cyan-400" size={32} />
+          <h2 className="text-2xl font-bold text-white">Laboratoare Interactive</h2>
+        </div>
 
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 min-h-[600px]">
-        {ActiveComponent && <ActiveComponent />}
+        <div className="space-y-4">
+          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+            <h3 className="text-xl font-bold text-white mb-3">Coding Katas Disponibile</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>FizzBuzz:</strong> Clasicul warm-up pentru iterare și condiții</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Two Sum:</strong> Găsește două numere care însumează o țintă (Hash Map - O(n))</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Valid Parentheses:</strong> Verifică paranteze balansate folosind Stack</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Binary Search:</strong> Căutare eficientă în array sortat (O(log n))</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Merge Sorted Arrays:</strong> Îmbină două array-uri sortate</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Reverse String:</strong> Inversează un string in-place</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Palindrome Checker:</strong> Verifică dacă un string e palindrom</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Find Max & Min:</strong> Găsește valori maxime și minime într-un array</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Linked List Basics:</strong> Operații fundamentale cu liste înlănțuite</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+            <h3 className="text-xl font-bold text-white mb-3">Concepte OOP & .NET</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Constructor & Properties:</strong> Practică cu inițializarea obiectelor</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Inheritance & Polymorphism:</strong> Exerciții cu moștenire și override</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Interface Implementation:</strong> Definirea și implementarea contractelor</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+            <h3 className="text-xl font-bold text-white mb-3">SQL & Database Practice</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Basic Queries:</strong> SELECT, WHERE, ORDER BY, LIMIT</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>JOINs:</strong> INNER JOIN, LEFT JOIN, RIGHT JOIN practice</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Aggregations:</strong> GROUP BY, HAVING, COUNT, SUM, AVG</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Subqueries:</strong> Interogări nested și CTEs</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-gradient-to-r from-orange-600/20 to-red-600/20 rounded-lg p-6 border-2 border-orange-500">
+            <h3 className="text-xl font-bold text-orange-300 mb-3">💡 Sfat pentru Practică</h3>
+            <p className="text-gray-200">
+              Laboratoarele interactive sunt concepute pentru a-ți consolida cunoștințele prin practică hands-on.
+              Încearcă să rezolvi fiecare problemă singur înainte de a privi soluția. Folosește-le împreună cu
+              secțiunea <strong>BIBLIA GIGA</strong> pentru pregătire completă!
+            </p>
+          </div>
+
+          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+            <h3 className="text-xl font-bold text-white mb-3">Resurse Suplimentare</h3>
+            <p className="text-gray-300 mb-4">
+              Pentru a practica coding katas și algoritmi în mod interactiv, recomandăm:
+            </p>
+            <ul className="space-y-2 text-gray-300">
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>LeetCode:</strong> Platformă excelentă pentru pregătirea interviurilor tehnice</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>HackerRank:</strong> Practică cu probleme de diverse dificultăți</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Codewars:</strong> Coding challenges cu community support</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">•</span>
+                <span><strong>Exercism:</strong> Învață prin practică cu mentorship</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
