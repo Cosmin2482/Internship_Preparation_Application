@@ -57,7 +57,7 @@ export function BibliaQuestions() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-white text-lg">Se �ncarc �ntrebrile...</div>
+        <div className="text-white text-lg">Se incarca intrebarile...</div>
       </div>
     );
   }
@@ -65,7 +65,7 @@ export function BibliaQuestions() {
   if (questions.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-white text-lg">Nu sunt �ntrebri disponibile.</div>
+        <div className="text-white text-lg">Nu sunt intrebari disponibile.</div>
       </div>
     );
   }
@@ -88,7 +88,7 @@ export function BibliaQuestions() {
   const getDifficultyLabel = (difficulty: string) => {
     switch (difficulty) {
       case 'easy':
-        return 'Uor';
+        return 'Usor';
       case 'medium':
         return 'Mediu';
       case 'hard':
@@ -103,11 +103,11 @@ export function BibliaQuestions() {
       <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-6 border border-cyan-400">
         <div className="flex items-center gap-3 mb-3">
           <BookOpen className="text-white" size={32} />
-          <h2 className="text-3xl font-bold text-white">�ntrebri de Interviu Interactive</h2>
+          <h2 className="text-3xl font-bold text-white">Intrebari de Interviu Interactive</h2>
         </div>
         <p className="text-white text-lg">
-          {questions.length} �ntrebri din toate categoriile. Studiaz fiecare �ntrebare, �ncearc s rspunzi mental,
-          apoi verific rspunsul corect.
+          {questions.length} intrebari din toate categoriile. Studiaza fiecare intrebare, incearca sa raspunzi mental,
+          apoi verifica raspunsul corect.
         </p>
       </div>
 
@@ -115,7 +115,7 @@ export function BibliaQuestions() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <span className="text-gray-400 text-sm font-medium">
-              �ntrebarea {currentIndex + 1} din {questions.length}
+              Intrebarea {currentIndex + 1} din {questions.length}
             </span>
             <span className={`${getDifficultyColor(currentQuestion.difficulty)} px-3 py-1 rounded-full text-white text-xs font-semibold`}>
               {getDifficultyLabel(currentQuestion.difficulty)}
@@ -139,7 +139,7 @@ export function BibliaQuestions() {
         </div>
 
         <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 mb-6">
-          <h3 className="text-xl font-bold text-white mb-4">�ntrebare:</h3>
+          <h3 className="text-xl font-bold text-white mb-4">Intrebare:</h3>
           <p className="text-gray-200 text-lg leading-relaxed">{currentQuestion.question}</p>
         </div>
 
@@ -155,12 +155,12 @@ export function BibliaQuestions() {
             {showAnswer ? (
               <>
                 <EyeOff size={24} />
-                Ascunde rspunsul
+                Ascunde raspunsul
               </>
             ) : (
               <>
                 <Eye size={24} />
-                Arat rspunsul corect
+                Arata raspunsul corect
               </>
             )}
           </button>
@@ -170,7 +170,7 @@ export function BibliaQuestions() {
           <div className="bg-gradient-to-r from-green-900/50 to-teal-900/50 rounded-lg p-6 border-2 border-green-500 mb-6 animate-fadeIn">
             <h3 className="text-xl font-bold text-green-300 mb-4 flex items-center gap-2">
               <Eye size={24} />
-              Rspuns Corect:
+              Raspuns Corect:
             </h3>
             <p className="text-gray-100 text-lg leading-relaxed whitespace-pre-line">{currentQuestion.correct_answer}</p>
           </div>
@@ -183,14 +183,14 @@ export function BibliaQuestions() {
             className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
           >
             <ChevronRight size={20} className="rotate-180" />
-            �napoi
+            Inapoi
           </button>
           <button
             onClick={handleNext}
             disabled={currentIndex === questions.length - 1}
             className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-gray-700 disabled:to-gray-700 disabled:text-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
           >
-            Urmtoarea
+            Urmatoarea
             <ChevronRight size={20} />
           </button>
         </div>
